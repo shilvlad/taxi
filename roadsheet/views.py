@@ -9,10 +9,11 @@ from .models import Roadsheets
 
 def start(request):
     roadsheets = Roadsheets.objects.filter(active=True)
-    context = {'roadsheets': roadsheets}
+    drafts_roadsheets = Roadsheets.objects.filter(draft=True)
+    context = {'roadsheets': roadsheets, 'drafts_roadsheets':drafts_roadsheets}
     return render(request, 'roadsheet/index.html', context)
 
-def create_routesheet():
+def create_routesheet(request):
     context = {}
     return render(request, 'roadsheet/add_routesheet.html', context)
 

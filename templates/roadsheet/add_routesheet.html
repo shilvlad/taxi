@@ -8,38 +8,7 @@
 
 
     {%  if user.is_authenticated %}
-        <h1>Список рейсов</h1>
-        <table class="table table-hover">
-            <thead>
-            <tr class="info">
-                <th scope="col">№</th>
-                <th scope="col">Водитель</th>
-                <th scope="col">Время отправки</th>
-                <th scope="col">Авто</th>
-                <th scope="col">Таблетка</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for r in roadsheets %}
-                <tr class="table-primary">
-                    <th scope="row">{{ r.id }}</th>
-                    <td>{{ r.driver }}</td>
-                    <td>{{ r.execution_datetime}}</td>
-                    <td>{{ r.car}}</td>
-                    <td>{{ r.tablet}}</td>
-                    <td>Изменить</td>
-                    <td>Закрыть</td>
-
-
-                </tr>
-            {% endfor %}
-
-
-
-            </tbody>
-        </table>
+        Тут добавляем маршрут
     {% else %}
         <div class="form-group">
             <form id="login_form" method="post" action="/login/">
