@@ -2,19 +2,43 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-# Create your models here.
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+
+
+class DriverWorkload(models.Model):
+    workload = models.CharField(max_length=100, editable=True,default = 0)
+    def __unicode__(self):
+        return str(self.manufacturer_name)
 
 class Drivers(models.Model):
-    first_name = models.CharField(max_length=100)
-    middle_name = models.CharField(max_length=100,blank=True, editable = True)
+    first_name = models.CharField(max_length=100, editable = True)
+    middle_name = models.CharField(max_length=100, editable = True)
     last_name = models.CharField(max_length=100, blank=True, editable=True)
+    callsign = models.CharField(max_length=100,blank=True, editable = True)
     def __unicode__(self):
         return self.first_name + " " + self.middle_name[:1]+ " " + self.last_name[:1]
 
+class CarManufacturer(models.Model):
+    manufacturer_name = models.CharField(max_length=100, editable=True,default = 0)
+    def __unicode__(self):
+        return str(self.manufacturer_name)
+
+class CarModel(models.Model):
+    manufacturer = models.ForeignKey(CarManufacturer,default = 0)
+    model_name = models.CharField(max_length=100, editable = True, default = 0)
+    def __unicode__(self):
+        return str(str(self.manufacturer) + str(' ') + str(self.model_name))
+
 class Cars(models.Model):
+    board_number = models.CharField(max_length=4, editable = True)
+    reg_number = models.CharField(max_length=10, editable = True)
+    car_model = models.ForeignKey(CarModel, blank=True,default = 0, editable = True)
 
     def __unicode__(self):
-        return str(self.id)
+        return self.reg_number.encode('utf8')
 
 class Tablets(models.Model):
     model = models.CharField(max_length=100,blank=True, editable = True)
@@ -29,7 +53,11 @@ class Roadsheets(models.Model):
     car = models.ForeignKey(Cars, blank=True,default = 0)
     tablet = models.ForeignKey(Tablets, blank=True,default = 0)
     previous_record = models.ForeignKey('self', null = True, default=0, editable = True)
+
+
     active = models.BooleanField(default=True)
+    draft = models.NullBooleanField()
+
     def __unicode__(self):
         return str(self.id)
 

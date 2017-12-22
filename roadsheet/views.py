@@ -12,6 +12,11 @@ def start(request):
     context = {'roadsheets': roadsheets}
     return render(request, 'roadsheet/index.html', context)
 
+def create_routesheet():
+    context = {}
+    return render(request, 'roadsheet/add_routesheet.html', context)
+
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
