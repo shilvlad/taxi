@@ -52,12 +52,9 @@ class Roadsheets(models.Model):
     driver = models.ForeignKey(Drivers)
     car = models.ForeignKey(Cars, blank=True,default = 0)
     tablet = models.ForeignKey(Tablets, blank=True,default = 0)
-    previous_record = models.ForeignKey('self', null = True, default=0, editable = True)
-
-
-    active = models.BooleanField(default=True)
-    draft = models.NullBooleanField()
-
+    active = models.BooleanField(default=False, editable = False)
+    draft = models.NullBooleanField(default=True, editable = False)
+    operator =  models.CharField(max_length=100, editable = False)
     def __unicode__(self):
         return str(self.id)
 

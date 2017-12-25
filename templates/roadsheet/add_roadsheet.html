@@ -8,7 +8,17 @@
 
 
     {%  if user.is_authenticated %}
-        Тут добавляем маршрут
+        <h1>Создать маршрутный лист</h1>
+        <div class="form-group">
+
+            <form action="/add_roadsheet/" method="POST">
+                {% csrf_token %}
+                <table>
+                    {{ form }}
+                </table>
+                <input type="submit" value="Создать" />
+            </form>
+        </div>
     {% else %}
         <div class="form-group">
             <form id="login_form" method="post" action="/login/">
