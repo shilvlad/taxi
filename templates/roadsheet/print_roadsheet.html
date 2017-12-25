@@ -1,0 +1,14 @@
+
+    {%  if user.is_authenticated %}
+        Выводим на печать № {{ sheet_id }}
+        {{ s.car.board_number }}
+        {{ s.car.car_model }}
+        {{ s.car.reg_number }}
+        {{ s.driver.first_name }}
+        {{ s.driver.middle_name }}
+        {{ s.driver.last_name }}
+
+    {% else %}
+       Залогиниться бы
+
+    {% endif %}

@@ -20,6 +20,7 @@
                 <th scope="col">Таблетка</th>
                 <th scope="col">Оформление</th>
                 <th scope="col">Удаление</th>
+                <th scope="col">Открыть рейс</th>
             </tr>
             </thead>
             <tbody>
@@ -30,8 +31,9 @@
                     <td>{{ dr.execution_datetime}}</td>
                     <td>{{ dr.car}}</td>
                     <td>{{ dr.tablet}}</td>
-                    <td>Продолжить</td>
+                    <td><a href="/print/{{ dr.id }}">Печать листа</a></td>
                     <td>Отменить</td>
+                    <td><a href="/begin_route/{{ dr.id }}">Поехали</a></td>
 
 
                 </tr>

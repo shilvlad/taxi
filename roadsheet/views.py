@@ -36,11 +36,24 @@ def create_roadsheet(request):
     else:
         return HttpResponse("Залогинься!")
 
+def print_roadsheet(request, sheet_id):
+    road_sheet = Roadsheets.objects.get(id=sheet_id)
+    context = {
+        's':road_sheet,
+    }
+    return render(request, 'roadsheet/print_roadsheet.html', context)
 
+def begin_route(request, sheet_id):
+    road_sheet = Roadsheets.objects.get(id=sheet_id)
+    if road_sheet.active == False:
+        road_sheet.active = True
+        road_sheet.draft = False
+        road_sheet.save()
 
+    else:
+        return HttpResponse("Рейс уже открыт")
 
-
-
+    return redirect(reverse('start'))
 
 
 
