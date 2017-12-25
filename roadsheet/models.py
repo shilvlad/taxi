@@ -60,7 +60,8 @@ class Tablets(models.Model):
 
 # Путевые листы
 class Roadsheets(models.Model):
-    execution_datetime = models.DateTimeField(auto_now_add=True, editable = True)
+    execution_datetime = models.DateTimeField(auto_now_add=True)
+    closed_datetime = models.DateTimeField(auto_now_add=True)
     driver = models.ForeignKey(Drivers)
     car = models.ForeignKey(Cars,default = 0)
     tablet = models.ForeignKey(Tablets, default = 0)

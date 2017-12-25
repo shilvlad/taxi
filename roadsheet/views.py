@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
 from .models import Roadsheets
 from forms import RoadsheetForm
+import datetime
 
 # Create your views here.
 
@@ -16,7 +17,12 @@ sys.setdefaultencoding('utf-8')
 def start(request):
     roadsheets = Roadsheets.objects.filter(active=True, deleted=False)
     drafts_roadsheets = Roadsheets.objects.filter(draft=True, deleted=False)
-    context = {'roadsheets': roadsheets, 'drafts_roadsheets':drafts_roadsheets}
+    closed_roadsheets = Roadsheets.objects.filter(active=False)
+    context = {
+        'roadsheets': roadsheets,
+        'drafts_roadsheets': drafts_roadsheets,
+        'closed_roadsheets': closed_roadsheets,
+    }
     return render(request, 'roadsheet/index.html', context)
 
 def roadsheet(request, sheet_id=None, Form=None):
@@ -55,29 +61,33 @@ def print_roadsheet(request, sheet_id):
     return render(request, 'roadsheet/print_roadsheet.html', context)
 
 def begin_route(request, sheet_id):
-    road_sheet = Roadsheets.objects.get(id=sheet_id)
-    if road_sheet.active == False:
-        road_sheet.active = True
-        road_sheet.draft = False
-        road_sheet.operator = request.user.username
-        road_sheet.save()
-
+    if request.user.is_authenticated:
+        road_sheet = Roadsheets.objects.get(id=sheet_id)
+        if road_sheet.active == False:
+            road_sheet.active = True
+            road_sheet.draft = False
+            road_sheet.operator = request.user.username
+            road_sheet.execution_datetime = datetime.datetime.now()
+            road_sheet.save()
+        else:
+            return HttpResponse("Рейс уже открыт")
+        return redirect(reverse('start'))
     else:
-        return HttpResponse("Рейс уже открыт")
-
-    return redirect(reverse('start'))
-
+        return HttpResponse("Требуется авторизация")
 
 def delete_route(request, sheet_id):
-    road_sheet = Roadsheets.objects.get(id=sheet_id)
-    if road_sheet.active == False:
-        road_sheet.deleted = True
-        road_sheet.save()
+    if request.user.is_authenticated:
+        road_sheet = Roadsheets.objects.get(id=sheet_id)
+        if road_sheet.active == False:
+            road_sheet.deleted = True
+            road_sheet.save()
 
+        else:
+            return HttpResponse("Рейс уже открыт")
+
+        return redirect(reverse('start'))
     else:
-        return HttpResponse("Рейс уже открыт")
-
-    return redirect(reverse('start'))
+        return HttpResponse("Требуется авторизация")
 
 
 def user_login(request):
@@ -107,9 +117,9 @@ def close_route(request, sheet_id=None):
             #TODO Проверка перед закрытием
             road_sheet = Roadsheets.objects.get(id=sheet_id)
             road_sheet.active = False
+            road_sheet.closed_datetime = datetime.datetime.now()
             road_sheet.operator = request.user.username
             road_sheet.save()
-            print request.user
             return redirect(reverse('start'))
     else:
         return HttpResponse("Требуется авторизация")
