@@ -15,5 +15,5 @@ class RoadsheetForm(ModelForm):
             "car_fullgas": "Полный бак?",
             "driver": "Водитель",
             "car":"Автомобиль",
-
+            "tablet": "Планшет",
         }

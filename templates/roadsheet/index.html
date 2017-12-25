@@ -62,7 +62,7 @@
                     <td>{{ r.driver }}</td>
                     <td>{{ r.execution_datetime}}</td>
                     <td>{{ r.car}}</td>
-                    <td>{{ r.tablet}}</td>
+                    <td>{{ r.tablet}} - {{ r.tablet.model }}</td>
                     <td></td>
                     <td><a href="/close_route/{{ r.id }}/">Закрыть</a></td>
 
@@ -95,9 +95,6 @@
                     <td>{{ r.car}}</td>
                     <td>{{ r.tablet}}</td>
                     <td>{{ r.closed_datetime}}</td>
-
-
-
                 </tr>
             {% endfor %}
             </tbody>

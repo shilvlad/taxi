@@ -56,17 +56,17 @@ class Tablets(models.Model):
     internal_code = models.CharField(max_length=100,blank=True, editable = True)
     tablet_status = models.ForeignKey(TabletStatus)
     def __unicode__(self):
-        return str(self.id)
+        return str(self.internal_code)
 
 # Путевые листы
 class Roadsheets(models.Model):
     execution_datetime = models.DateTimeField(auto_now_add=True)
     closed_datetime = models.DateTimeField(auto_now_add=True)
     driver = models.ForeignKey(Drivers)
-    car = models.ForeignKey(Cars,default = 0)
-    tablet = models.ForeignKey(Tablets, default = 0)
+    car = models.ForeignKey(Cars)
+    tablet = models.ForeignKey(Tablets)
     active = models.BooleanField(default=False, editable = False)
-    workload = models.ForeignKey(DriverWorkload, default = 0)
+    workload = models.ForeignKey(DriverWorkload)
     draft = models.NullBooleanField(default=True, editable = False)
     operator =  models.CharField(max_length=100, editable = False)
     car_state = models.BooleanField(default=True)

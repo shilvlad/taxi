@@ -4,7 +4,7 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login
 from django.shortcuts import redirect
-from .models import Roadsheets
+from .models import Roadsheets, Tablets, Cars, Drivers
 from forms import RoadsheetForm
 import datetime
 
@@ -17,7 +17,8 @@ sys.setdefaultencoding('utf-8')
 def start(request):
     roadsheets = Roadsheets.objects.filter(active=True, deleted=False)
     drafts_roadsheets = Roadsheets.objects.filter(draft=True, deleted=False)
-    closed_roadsheets = Roadsheets.objects.filter(active=False)
+    closed_roadsheets = Roadsheets.objects.filter(active=False, closed_datetime__gt=datetime.date.today())
+
     context = {
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
@@ -34,7 +35,19 @@ def roadsheet(request, sheet_id=None, Form=None):
             form = RoadsheetForm(request.POST, instance=Roadsheets.objects.get(id=sheet_id))
 
     elif sheet_id is None:
+        # Отбираем доступные планшеты, машины,
         form = RoadsheetForm()
+        tablets_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('tablet', flat=True)
+        tablets_accessible = Tablets.objects.exclude(id__in=tablets_in_use)
+        cars_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('car', flat=True)
+        cars_accessible = Cars.objects.exclude(id__in=cars_in_use)
+        drivers_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('driver', flat=True)
+        drivers_accessible = Drivers.objects.exclude(id__in=drivers_in_use)
+
+        form.fields['tablet'].queryset = tablets_accessible
+        form.fields['car'].queryset = cars_accessible
+        form.fields['driver'].queryset = drivers_accessible
+
     else:
         form = RoadsheetForm(instance=Roadsheets.objects.get(id=sheet_id))
         tmp = Roadsheets.objects.get(id=sheet_id)
