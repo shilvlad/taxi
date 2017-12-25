@@ -26,13 +26,13 @@
             <tbody>
             {% for dr in drafts_roadsheets %}
                 <tr class="table-primary">
-                    <th scope="row">{{ dr.id }}</th>
+                    <th scope="row"><a href="/edit/{{ dr.id }}">{{ dr.id }}</a></th>
                     <td>{{ dr.driver }}</td>
                     <td>{{ dr.execution_datetime}}</td>
                     <td>{{ dr.car}}</td>
                     <td>{{ dr.tablet}}</td>
                     <td><a href="/print/{{ dr.id }}">Печать листа</a></td>
-                    <td>Отменить</td>
+                    <td><a href="/delete/{{ dr.id }}">Отменить</a></td>
                     <td><a href="/begin_route/{{ dr.id }}">Поехали</a></td>
 
 
@@ -42,7 +42,7 @@
         </table>
 
 
-        <h1>Список рейсов</h1>
+        <h1>Список активных рейсов</h1>
         <table class="table table-hover">
             <thead>
             <tr class="info">
@@ -64,7 +64,7 @@
                     <td>{{ r.car}}</td>
                     <td>{{ r.tablet}}</td>
                     <td></td>
-                    <td>Закрыть</td>
+                    <td><a href="/close_route/{{ r.id }}/">Закрыть</a></td>
 
 
                 </tr>

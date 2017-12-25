@@ -8,13 +8,13 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
-# График выезда
+# График выезда - OK
 class DriverWorkload(models.Model):
     workload = models.CharField(max_length=100, editable=True,default = 0)
     def __unicode__(self):
         return str(self.workload)
 
-# Водители
+# Водители - OK
 class Drivers(models.Model):
     first_name = models.CharField(max_length=100, editable = True)
     middle_name = models.CharField(max_length=100, editable = True)
@@ -23,20 +23,20 @@ class Drivers(models.Model):
     def __unicode__(self):
         return self.first_name + " " + self.middle_name[:1]+ " " + self.last_name[:1]
 
-# Производители авто
+# Производители авто  - OK
 class CarManufacturer(models.Model):
     manufacturer_name = models.CharField(max_length=100, editable=True,default = 0)
     def __unicode__(self):
         return str(self.manufacturer_name)
 
-# Модели авто
+# Модели авто  - OK
 class CarModel(models.Model):
     manufacturer = models.ForeignKey(CarManufacturer,default = 0)
     model_name = models.CharField(max_length=100, editable = True, default = 0)
     def __unicode__(self):
         return str(str(self.manufacturer) + str(' ') + str(self.model_name))
 
-
+# Автомобили
 class Cars(models.Model):
     board_number = models.CharField(max_length=4, editable = True)
     reg_number = models.CharField(max_length=10, editable = True)
@@ -44,17 +44,25 @@ class Cars(models.Model):
     def __unicode__(self):
         return self.reg_number.encode('utf8')
 
+class TabletStatus(models.Model):
+    status = models.CharField(max_length=100, editable = True)
+    def __unicode__(self):
+        return self.status.encode('utf8')
+
+# Планшеты
 class Tablets(models.Model):
     model = models.CharField(max_length=100,blank=True, editable = True)
     serial_number = models.CharField(max_length=100,blank=True, editable = True)
     internal_code = models.CharField(max_length=100,blank=True, editable = True)
+    tablet_status = models.ForeignKey(TabletStatus)
     def __unicode__(self):
         return str(self.id)
 
+# Путевые листы
 class Roadsheets(models.Model):
-    execution_datetime = models.DateTimeField(auto_now_add=True ,blank=True, editable = True)
+    execution_datetime = models.DateTimeField(auto_now_add=True, editable = True)
     driver = models.ForeignKey(Drivers)
-    car = models.ForeignKey(Cars, blank=True,default = 0)
+    car = models.ForeignKey(Cars,default = 0)
     tablet = models.ForeignKey(Tablets, default = 0)
     active = models.BooleanField(default=False, editable = False)
     workload = models.ForeignKey(DriverWorkload, default = 0)
@@ -62,6 +70,7 @@ class Roadsheets(models.Model):
     operator =  models.CharField(max_length=100, editable = False)
     car_state = models.BooleanField(default=True)
     car_fullgas = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False, editable = False)
 
     def __unicode__(self):
         return str(self.id)

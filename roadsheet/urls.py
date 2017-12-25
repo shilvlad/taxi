@@ -7,10 +7,13 @@ urlpatterns = [
     #url(r'^userrequest/', views.userrequest, name='userrequest'),
     url(r'^login/', views.user_login, name='login'),
     url(r'^logout/', views.user_logout, name='logout'),
-    url(r'^add_roadsheet/', views.create_roadsheet, name='add_roadsheet'),
+    url(r'^add_roadsheet/', views.roadsheet, name='add_roadsheet'),
     url(r'^print/(?P<sheet_id>[0-9]+)/$', views.print_roadsheet, name='print_roadsheet'),
     url(r'^begin_route/(?P<sheet_id>[0-9]+)/$', views.begin_route, name='begin_route'),
-
+    url(r'^delete/(?P<sheet_id>[0-9]+)/$', views.delete_route, name='delete_route'),
+    url(r'^edit/(?P<sheet_id>[0-9]+)/$', views.roadsheet, name='edit_draft'),
+    url(r'^save_draft/', views.roadsheet, name='save_draft'),
+    url(r'^close_route/(?P<sheet_id>[0-9]+)/$', views.close_route, name='close_route'),
     #url(r'^profile/', views.profile, name='profile'),
 
 ]
