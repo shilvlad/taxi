@@ -16,4 +16,5 @@ class RoadsheetForm(ModelForm):
             "driver": "Водитель",
             "car":"Автомобиль",
             "tablet": "Планшет",
+            "workload": "График",
         }
