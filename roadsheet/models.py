@@ -36,20 +36,21 @@ class CarModel(models.Model):
     def __unicode__(self):
         return str(str(self.manufacturer) + str(' ') + str(self.model_name))
 
-# Автомобили
+# Автомобили - OK
 class Cars(models.Model):
     board_number = models.CharField(max_length=4, editable = True)
     reg_number = models.CharField(max_length=10, editable = True)
     car_model = models.ForeignKey(CarModel, blank=True,default = 0, editable = True)
     def __unicode__(self):
-        return self.reg_number.encode('utf8')
+        return self.board_number.encode('utf8')
 
+# Статусы - ОК
 class TabletStatus(models.Model):
     status = models.CharField(max_length=100, editable = True)
     def __unicode__(self):
         return self.status.encode('utf8')
 
-# Планшеты
+# Планшеты - ОК
 class Tablets(models.Model):
     model = models.CharField(max_length=100,blank=True, editable = True)
     serial_number = models.CharField(max_length=100,blank=True, editable = True)
@@ -58,21 +59,26 @@ class Tablets(models.Model):
     def __unicode__(self):
         return str(self.internal_code)
 
+# SIM - ОК
+class SimCards(models.Model):
+    number = models.CharField(max_length=20,blank=True, editable = True)
+    sn = models.CharField(max_length=50,blank=True, editable = True)
+    operator = models.CharField(max_length=50,blank=True, editable = True)
+    in_use =  models.BooleanField(default=True)
+    def __unicode__(self):
+        return str(self.number)
+
 # Путевые листы
 class Roadsheets(models.Model):
     execution_datetime = models.DateTimeField(auto_now_add=True)
     closed_datetime = models.DateTimeField(auto_now_add=True)
     driver = models.ForeignKey(Drivers)
     car = models.ForeignKey(Cars)
-    tablet = models.ForeignKey(Tablets)
     active = models.BooleanField(default=False, editable = False)
     workload = models.ForeignKey(DriverWorkload)
     draft = models.NullBooleanField(default=True, editable = False)
     operator =  models.CharField(max_length=100, editable = False)
-    car_state = models.BooleanField(default=True)
-    car_fullgas = models.BooleanField(default=True)
     deleted = models.BooleanField(default=False, editable = False)
-
     def __unicode__(self):
         return str(self.id)
 
