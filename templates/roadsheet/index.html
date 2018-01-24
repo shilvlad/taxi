@@ -119,21 +119,22 @@
 {% endblock %}
 
 {% block info %}
+    {% if perms.roadsheet.add_roadsheets %}
     <div class="card text-black bg-secondary mb-3" style="max-width: 20rem;">
-        <div class="card-header">Всем</div>
+        <div class="card-header">Оператору</div>
         <div class="card-body">
-            <h4 class="card-title">Secondary card title</h4>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text">Информация для оператора</p>
         </div>
     </div>
+    {% endif %}
 
-
+    {% if perms.roadsheet.add_tablets %}
     <div class="card bg-light mb-3" style="max-width: 20rem;">
         <div class="card-header">Сервисмэну</div>
         <div class="card-body">
-            <h4 class="card-title">Light card title</h4>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
         </div>
     </div>
+    {% endif %}
 
 {% endblock %}
