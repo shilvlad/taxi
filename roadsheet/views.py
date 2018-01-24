@@ -34,34 +34,27 @@ def roadsheet(request, sheet_id=None, Form=None):
         else:
             form = RoadsheetForm(request.POST, instance=Roadsheets.objects.get(id=sheet_id))
 
-
     elif sheet_id is None:
         # Отбираем доступные планшеты, машины,
         form = RoadsheetForm()
-
 
     else:
         form = RoadsheetForm(instance=Roadsheets.objects.get(id=sheet_id))
         tmp = Roadsheets.objects.get(id=sheet_id)
         tmp.deleted = True
 
-
     if form.is_valid():
         form.save()
         return redirect(reverse('start'))
 
     context = {'form': form}
-    tablets_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('tablet', flat=True)
-    tablets_accessible = Tablets.objects.exclude(id__in=tablets_in_use)
     cars_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('car', flat=True)
     cars_accessible = Cars.objects.exclude(id__in=cars_in_use)
     drivers_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('driver', flat=True)
     drivers_accessible = Drivers.objects.exclude(id__in=drivers_in_use)
-    form.fields['tablet'].queryset = tablets_accessible
     form.fields['car'].queryset = cars_accessible
     form.fields['driver'].queryset = drivers_accessible
     return render(request, 'roadsheet/add_roadsheet.html', context)
-
 
 
 
@@ -117,6 +110,7 @@ def user_login(request):
         else:
             print "Invalid login details: {0}, {1}".format(username, password)
             return HttpResponse("Invalid login details supplied.")
+
 
 def user_logout(request):
     logout(request)

@@ -5,10 +5,7 @@
 {% endblock %}
 
 {% block content %}
-
-
     {%  if user.is_authenticated %}
-
         <h1>Черновики</h1>
         <table class="table table-hover">
             <thead>
@@ -118,5 +115,25 @@
         </div>
 
     {% endif %}
+
+{% endblock %}
+
+{% block info %}
+    <div class="card text-black bg-secondary mb-3" style="max-width: 20rem;">
+        <div class="card-header">Всем</div>
+        <div class="card-body">
+            <h4 class="card-title">Secondary card title</h4>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+    </div>
+
+
+    <div class="card bg-light mb-3" style="max-width: 20rem;">
+        <div class="card-header">Сервисмэну</div>
+        <div class="card-body">
+            <h4 class="card-title">Light card title</h4>
+            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+        </div>
+    </div>
 
 {% endblock %}

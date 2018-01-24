@@ -44,11 +44,22 @@ class Cars(models.Model):
     def __unicode__(self):
         return self.board_number.encode('utf8')
 
+
+
 # Статусы - ОК
 class TabletStatus(models.Model):
     status = models.CharField(max_length=100, editable = True)
     def __unicode__(self):
         return self.status.encode('utf8')
+
+# SIM - ОК
+class SimCards(models.Model):
+    number = models.CharField(max_length=20, blank=True, editable=True)
+    sn = models.CharField(max_length=50, blank=True, editable=True)
+    operator = models.CharField(max_length=50, blank=True, editable=True)
+    in_use = models.BooleanField(default=True)
+    def __unicode__(self):
+        return str(self.number)
 
 # Планшеты - ОК
 class Tablets(models.Model):
@@ -58,15 +69,6 @@ class Tablets(models.Model):
     tablet_status = models.ForeignKey(TabletStatus)
     def __unicode__(self):
         return str(self.internal_code)
-
-# SIM - ОК
-class SimCards(models.Model):
-    number = models.CharField(max_length=20,blank=True, editable = True)
-    sn = models.CharField(max_length=50,blank=True, editable = True)
-    operator = models.CharField(max_length=50,blank=True, editable = True)
-    in_use =  models.BooleanField(default=True)
-    def __unicode__(self):
-        return str(self.number)
 
 # Путевые листы
 class Roadsheets(models.Model):
@@ -81,4 +83,5 @@ class Roadsheets(models.Model):
     deleted = models.BooleanField(default=False, editable = False)
     def __unicode__(self):
         return str(self.id)
+
 
