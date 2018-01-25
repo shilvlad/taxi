@@ -47,7 +47,7 @@ class Cars(models.Model):
 
 
 # Статусы - ОК
-class TabletStatus(models.Model):
+class TabletQuality(models.Model):
     status = models.CharField(max_length=100, editable = True)
     def __unicode__(self):
         return self.status.encode('utf8')
@@ -87,10 +87,16 @@ class DocTabletSim(models.Model):
     tablet = models.ForeignKey(Tablets)
     sim = models.ForeignKey(SimCards)
     parted_timestamp = models.DateTimeField(auto_now_add=True, editable = True)
-    aparted_timestamp = models.DateTimeField(blank=True, editable = False)
-
+    aparted_timestamp = models.DateTimeField(blank=True, editable = False, null=True)
     def __unicode__(self):
         return str(str(self.tablet) + str(' - ') + str(self.sim))
+
+
+class DocQualityTablet(models.Model):
+    tablet = models.ForeignKey(Tablets)
+    quality = models.ForeignKey(TabletQuality)
+    timestamp = models.DateTimeField(auto_now_add=True, editable=True)
+
 
 class TMCSheet(models.Model):
     pass

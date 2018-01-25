@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Состояние планшетов
+{% endblock %}
+
+{% block content %}
+
+
+    {%  if user.is_authenticated %}
+
+        <div class="row">
+            <div class="col-xs-120 col-sm-1">
+
+            </div>
+            <div class="col-xs-120 col-sm-8">
+                <h1>Определение состояния планшетов</h1>
+        <table class="table table-hover">
+            <thead>
+            <tr class="info">
+                <th scope="col">Документ</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Номер планшета</th>
+                <th scope="col">Модель</th>
+                <th scope="col">Состояние</th>
+                <th scope="col">Действие</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for t in tablets %}
+                <tr class="table-primary">
+                    <td>{{ t.id }}</td>
+                    <td>{{ t.timestamp }}</td>
+                    <td>{{ t.tablet }}</td>
+                    <td>{{ t.tablet.model }}</td>
+                    <td>{{ t.quality }}</td>
+                    <td><a href="/doc_apart_tablet_sim/{{ t.id }}">Разобрать</a></td>
+
+
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+            </div>
+            <div class="col-xs-120 col-sm-2">
+                <div class="form-group">
+                    <form action="/doc_part_tablet_sim/" method="POST">
+                        {% csrf_token %}
+                        <table>
+                            {{ form }}
+                        </table>
+                        <input type="submit" value="Создать" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="form-group">
+            <form id="login_form" method="post" action="/login/">
+                {% csrf_token %}
+
+                <label class="col-form-label col-form-label-lg" for="inputLarge">Имя</label>
+                <input class="form-control form-control-lg" type="text" placeholder=".form-control-lg" id="inputLarge" value="ilya" name="username">
+
+                <label class="col-form-label col-form-label-lg" for="inputLarge">Пароль</label>
+                <input class="form-control form-control-lg" type="password" placeholder=".form-control-lg" name="password" id="inputLarge" value="8qsip937" name="password">
+                <br>
+                <button type="submit" class="btn btn-primary">Войти</button>
+
+            </form>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

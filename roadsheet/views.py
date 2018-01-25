@@ -4,8 +4,8 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
-from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards
-from forms import RoadsheetForm, DocTabletSimForm
+from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality
+from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm
 import datetime
 
 # Create your views here.
@@ -119,11 +119,33 @@ def doc_apart_tablet_sim(request, doc_id):
         doc = DocTabletSim.objects.get(id = doc_id)
         doc.aparted_timestamp = datetime.datetime.now()
         doc.save()
-        print doc
+
 
         return redirect(reverse('doc_part_tablet_sim'))
     else:
         return HttpResponse("Так не надо делать")
+
+    # Установка качества планшетов
+def doc_quality_tablet(request):
+    if request.method == 'POST':
+        form = DocQualityTabletForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('doc_quality_tablet'))
+    else:
+        form = DocQualityTabletForm()
+
+    tablets = DocQualityTablet.objects.all()
+
+
+    form.fields['tablet'].queryset = Tablets.objects.all().values_list( flat=True)
+    form.fields['quality'].queryset = TabletQuality.objects.all()
+
+
+    context = {'form': form, 'tablets': tablets}
+
+    return render(request, 'roadsheet/doc_quality_tablet.html', context)
+
 
 
 #Печать документов

@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from models import Roadsheets, DocTabletSim
+from models import Roadsheets, DocTabletSim, DocQualityTablet
 from django.contrib.auth import authenticate
 
 
@@ -25,3 +25,13 @@ class DocTabletSimForm(ModelForm):
         labels = {
 
         }
+
+class DocQualityTabletForm(ModelForm):
+    class Meta:
+        model = DocQualityTablet
+        fields = '__all__'
+        labels = {
+
+        }
+
+
