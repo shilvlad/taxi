@@ -2,10 +2,10 @@
 from django.shortcuts import render
 from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
-from .models import Roadsheets, Tablets, Cars, Drivers
-from forms import RoadsheetForm
+from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards
+from forms import RoadsheetForm, DocTabletSimForm
 import datetime
 
 # Create your views here.
@@ -59,12 +59,7 @@ def roadsheet(request, sheet_id=None, Form=None):
 
 
 
-def print_roadsheet(request, sheet_id):
-    road_sheet = Roadsheets.objects.get(id=sheet_id)
-    context = {
-        's':road_sheet,
-    }
-    return render(request, 'roadsheet/print_roadsheet.html', context)
+
 
 def begin_route(request, sheet_id):
     if request.user.is_authenticated:
@@ -96,6 +91,53 @@ def delete_route(request, sheet_id):
         return HttpResponse("Требуется авторизация")
 
 
+#Формирование документов
+def doc_part_tablet_sim(request):
+    if request.method == 'POST':
+        form = DocTabletSimForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('doc_part_tablet_sim'))
+    else:
+        form = DocTabletSimForm()
+
+    tablets = DocTabletSim.objects.filter(aparted_timestamp=None)
+    tablets_in_use = DocTabletSim.objects.filter(aparted_timestamp=None).values_list('tablet', flat=True)
+    tablets_accessible = Tablets.objects.exclude(id__in=tablets_in_use)
+    sim_in_use = DocTabletSim.objects.filter(aparted_timestamp=None).values_list('sim', flat=True)
+    sim_accessible = SimCards.objects.exclude(id__in=sim_in_use)
+    form.fields['tablet'].queryset = tablets_accessible
+    form.fields['sim'].queryset = sim_accessible
+
+    context = {'form': form, 'tablets':tablets}
+
+    return render(request, 'roadsheet/doc_part_tablet_sim.html', context)
+
+#Расформировываем комплект
+def doc_apart_tablet_sim(request, doc_id):
+    if request.method == 'GET':
+        doc = DocTabletSim.objects.get(id = doc_id)
+        doc.aparted_timestamp = datetime.datetime.now()
+        doc.save()
+        print doc
+
+        return redirect(reverse('doc_part_tablet_sim'))
+    else:
+        return HttpResponse("Так не надо делать")
+
+
+#Печать документов
+def print_roadsheet(request, sheet_id):
+    road_sheet = Roadsheets.objects.get(id=sheet_id)
+    context = {
+        's': road_sheet,
+    }
+    return render(request, 'roadsheet/print_roadsheet.html', context)
+
+
+
+# Авторизация
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -114,7 +156,7 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
-    return render(request, 'Portal/index.html',{'username':request.user.username})
+    return render(request, 'roadsheet/index.html',{'username':request.user.username})
 
 def close_route(request, sheet_id=None):
     if request.user.is_authenticated:

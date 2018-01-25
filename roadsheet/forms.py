@@ -2,7 +2,7 @@
 from django import forms
 from django.forms import ModelForm
 
-from models import Roadsheets
+from models import Roadsheets, DocTabletSim
 from django.contrib.auth import authenticate
 
 
@@ -16,4 +16,12 @@ class RoadsheetForm(ModelForm):
             "driver": "Водитель",
             "car":"Автомобиль",
             "workload": "График",
+        }
+
+class DocTabletSimForm(ModelForm):
+    class Meta:
+        model = DocTabletSim
+        fields = '__all__'
+        labels = {
+
         }

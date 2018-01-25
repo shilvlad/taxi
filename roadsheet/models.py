@@ -66,7 +66,6 @@ class Tablets(models.Model):
     model = models.CharField(max_length=100,blank=True, editable = True)
     serial_number = models.CharField(max_length=100,blank=True, editable = True)
     internal_code = models.CharField(max_length=100,blank=True, editable = True)
-    tablet_status = models.ForeignKey(TabletStatus)
     def __unicode__(self):
         return str(self.internal_code)
 
@@ -84,4 +83,14 @@ class Roadsheets(models.Model):
     def __unicode__(self):
         return str(self.id)
 
+class DocTabletSim(models.Model):
+    tablet = models.ForeignKey(Tablets)
+    sim = models.ForeignKey(SimCards)
+    parted_timestamp = models.DateTimeField(auto_now_add=True, editable = True)
+    aparted_timestamp = models.DateTimeField(blank=True, editable = False)
 
+    def __unicode__(self):
+        return str(str(self.tablet) + str(' - ') + str(self.sim))
+
+class TMCSheet(models.Model):
+    pass
