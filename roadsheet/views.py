@@ -135,10 +135,18 @@ def doc_quality_tablet(request):
     else:
         form = DocQualityTabletForm()
 
-    tablets = DocQualityTablet.objects.all()
+    uniquedoc = []
+    tl = []
+    tablets = DocQualityTablet.objects.order_by('-timestamp')
+    for n in tablets:
+        if n.tablet.id not in tl:
+            uniquedoc.append(n.id)
+            tl.append(n.tablet.id)
+    tablet_filtered = tablets.filter(id__in=uniquedoc)
+
     form.fields['tablet'].queryset = Tablets.objects.all()
     form.fields['quality'].queryset = TabletQuality.objects.all()
-    context = {'form': form, 'tablets': tablets}
+    context = {'form': form, 'tablets': tablets, 'tablets_last': tablet_filtered }
 
     return render(request, 'roadsheet/doc_quality_tablet.html', context)
 
