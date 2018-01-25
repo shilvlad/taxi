@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^login/', views.user_login, name='login'),
     url(r'^logout/', views.user_logout, name='logout'),
     url(r'^add_roadsheet/', views.roadsheet, name='add_roadsheet'),
+    url(r'^doc_add_tmc/', views.doc_add_tmc, name='doc_add_tmc'),
     url(r'^doc_part_tablet_sim/', views.doc_part_tablet_sim, name='doc_part_tablet_sim'),
     url(r'^doc_apart_tablet_sim/(?P<doc_id>[0-9]+)/$', views.doc_apart_tablet_sim, name='doc_apart_tablet_sim'),
     url(r'^doc_quality_tablet/', views.doc_quality_tablet, name='doc_quality_tablet'),

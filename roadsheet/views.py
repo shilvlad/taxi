@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality
-from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm
+from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm
 import datetime
 
 # Create your views here.
@@ -18,7 +18,7 @@ def start(request):
     roadsheets = Roadsheets.objects.filter(active=True, deleted=False)
     drafts_roadsheets = Roadsheets.objects.filter(draft=True, deleted=False)
     closed_roadsheets = Roadsheets.objects.filter(active=False, closed_datetime__gt=datetime.date.today())
-
+    
     context = {
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
@@ -56,7 +56,19 @@ def roadsheet(request, sheet_id=None, Form=None):
     form.fields['driver'].queryset = drivers_accessible
     return render(request, 'roadsheet/add_roadsheet.html', context)
 
+# Передача ТМЦ на рейс
+def doc_add_tmc(request):
+    if request.method == 'POST':
+        form = DocAddTmcForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('start'))
+    else:
+        form = DocAddTmcForm()
 
+    context = {'form': form}
+
+    return render(request, 'roadsheet/doc_add_tmc.html', context)
 
 
 
