@@ -23,7 +23,6 @@
                 <th scope="col">Номер планшета</th>
                 <th scope="col">Модель</th>
                 <th scope="col">Состояние</th>
-                <th scope="col">Действие</th>
             </tr>
             </thead>
             <tbody>
@@ -34,9 +33,6 @@
                     <td>{{ t.tablet }}</td>
                     <td>{{ t.tablet.model }}</td>
                     <td>{{ t.quality }}</td>
-                    <td><a href="/doc_apart_tablet_sim/{{ t.id }}">Разобрать</a></td>
-
-
                 </tr>
             {% endfor %}
             </tbody>
@@ -45,7 +41,7 @@
             </div>
             <div class="col-xs-120 col-sm-2">
                 <div class="form-group">
-                    <form action="/doc_part_tablet_sim/" method="POST">
+                    <form action="/doc_quality_tablet/" method="POST">
                         {% csrf_token %}
                         <table>
                             {{ form }}

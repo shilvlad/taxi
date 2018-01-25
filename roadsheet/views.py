@@ -136,12 +136,8 @@ def doc_quality_tablet(request):
         form = DocQualityTabletForm()
 
     tablets = DocQualityTablet.objects.all()
-
-
-    form.fields['tablet'].queryset = Tablets.objects.all().values_list( flat=True)
+    form.fields['tablet'].queryset = Tablets.objects.all()
     form.fields['quality'].queryset = TabletQuality.objects.all()
-
-
     context = {'form': form, 'tablets': tablets}
 
     return render(request, 'roadsheet/doc_quality_tablet.html', context)
