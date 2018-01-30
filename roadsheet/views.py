@@ -17,7 +17,7 @@ sys.setdefaultencoding('utf-8')
 def start(request):
     roadsheets = Roadsheets.objects.filter(active=True, deleted=False)
     drafts_roadsheets = Roadsheets.objects.filter(draft=True, deleted=False)
-    closed_roadsheets = Roadsheets.objects.filter(active=False, closed_datetime__gt=datetime.date.today())
+    closed_roadsheets = Roadsheets.objects.filter(draft=False, active=False, closed_datetime__gt=datetime.date.today())
     doc_add_tmc_form = DocAddTmcForm()
 
 
@@ -31,11 +31,19 @@ def start(request):
 
 
 
-def roadsheet(request, sheet_id=None, Form=None):
+# Добавление редактирование рейса
+# -------------------------------
+# Возможны варианты:
+# 1) Создание нового черновика рейса
+# 2) Редактирование черновика
+# 3) Сохранение формы
+def roadsheet(request, sheet_id=None):
     # Редактирование либо сохранение
+
     if request.method == 'POST':
         if sheet_id is None:
             form = RoadsheetForm(request.POST)
+            
         else:
             form = RoadsheetForm(request.POST, instance=Roadsheets.objects.get(id=sheet_id))
 

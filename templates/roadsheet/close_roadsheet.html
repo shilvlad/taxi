@@ -6,9 +6,7 @@
 
 {% block content %}
 
-
-
-        <h1>Формирование путевого листа</h1>
+        <h1>Создать маршрутный лист</h1>
         <div class="form-group">
 
             <form action="/add_roadsheet/" method="POST">
@@ -16,9 +14,8 @@
                 <table>
                     {{ form }}
                 </table>
-                <input type="submit" value="Создать" onSubmit="this.submit(); window.close();"/>
+                <input type="submit" value="Создать" />
             </form>
         </div>
-
 
 {% endblock %}
