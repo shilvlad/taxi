@@ -6,17 +6,27 @@
 
 {% block content %}
 
+<script>
+function f() {
+    window.opener.location.reload();
+    window.close();
 
+
+
+}
+
+</script>
 
         <h1>Формирование путевого листа</h1>
         <div class="form-group">
 
-            <form action="/add_roadsheet/" method="POST">
+            <form action="/roadsheet/{{ sheet_id }}/" method="POST">
                 {% csrf_token %}
                 <table>
+
                     {{ form }}
                 </table>
-                <input type="submit" value="Создать" onSubmit="this.submit(); window.close();"/>
+                <input type="submit" value="Сохранить" onclick=""/>
             </form>
         </div>
 

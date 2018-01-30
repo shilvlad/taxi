@@ -71,13 +71,12 @@ class Tablets(models.Model):
 
 # Путевые листы
 class Roadsheets(models.Model):
-    execution_datetime = models.DateTimeField(auto_now_add=True)
-    closed_datetime = models.DateTimeField(auto_now_add=True)
+    creation_timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=True)
+    execution_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
+    closed_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
     driver = models.ForeignKey(Drivers)
     car = models.ForeignKey(Cars)
-    active = models.BooleanField(default=False, editable = False)
     workload = models.ForeignKey(DriverWorkload)
-    draft = models.NullBooleanField(default=True, editable = False)
     operator =  models.CharField(max_length=100, editable = False)
     deleted = models.BooleanField(default=False, editable = False)
     def __unicode__(self):

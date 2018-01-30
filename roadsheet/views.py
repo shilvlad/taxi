@@ -15,9 +15,10 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 def start(request):
-    roadsheets = Roadsheets.objects.filter(active=True, deleted=False)
-    drafts_roadsheets = Roadsheets.objects.filter(draft=True, deleted=False)
-    closed_roadsheets = Roadsheets.objects.filter(draft=False, active=False, closed_datetime__gt=datetime.date.today())
+
+    drafts_roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=True, deleted=False)
+    roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=False, deleted=False)
+    closed_roadsheets = Roadsheets.objects.filter( closed_timestamp__gt=datetime.date.today())
     doc_add_tmc_form = DocAddTmcForm()
 
 
@@ -32,6 +33,7 @@ def start(request):
 
 
 # Добавление редактирование рейса
+# Создание черновика (Creation_timestamp) -> активация рейса (execution_timestamp) -> Закрытие рейса (clothed_timestamp)
 # -------------------------------
 # Возможны варианты:
 # 1) Создание нового черновика рейса
@@ -39,36 +41,67 @@ def start(request):
 # 3) Сохранение формы
 def roadsheet(request, sheet_id=None):
     # Редактирование либо сохранение
-
+    context ={}
     if request.method == 'POST':
-        if sheet_id is None:
-            form = RoadsheetForm(request.POST)
-            
-        else:
-            form = RoadsheetForm(request.POST, instance=Roadsheets.objects.get(id=sheet_id))
 
-    elif sheet_id is None:
-        # Отбираем доступные планшеты, машины,
-        form = RoadsheetForm()
-
+        form = RoadsheetForm(request.POST)
+        if form.is_valid():
+            form.save()
+            if sheet_id is not None:
+                print "DELETE "
+                tmp = Roadsheets.objects.get(id=sheet_id)
+                tmp.deleted = True
+                tmp.save()
+            #return redirect(reverse('start'))
+            return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
-        form = RoadsheetForm(instance=Roadsheets.objects.get(id=sheet_id))
-        tmp = Roadsheets.objects.get(id=sheet_id)
-        tmp.deleted = True
 
-    if form.is_valid():
-        form.save()
+        if sheet_id is None:
+
+            form = RoadsheetForm()
+            drivers_in_use = Roadsheets.objects.filter(closed_timestamp__isnull=True, deleted=False).values_list(
+                'driver', flat=True)
+            drivers_accessible = Drivers.objects.exclude(id__in=drivers_in_use)
+            cars_in_use = Roadsheets.objects.filter(closed_timestamp__isnull=True, deleted=False).values_list('car',
+                                                                                                              flat=True)
+            cars_accessible = Cars.objects.exclude(id__in=cars_in_use)
+
+            form.fields['car'].queryset = cars_accessible
+            form.fields['driver'].queryset = drivers_accessible
+
+        else:
+
+            form = RoadsheetForm(instance=Roadsheets.objects.get(id=sheet_id))
+
+            drivers_in_use = Roadsheets.objects.filter(closed_timestamp__isnull=True, deleted=False).\
+                exclude(id=sheet_id).values_list('driver', flat=True)
+            drivers_accessible = Drivers.objects.exclude(id__in=drivers_in_use)
+
+            cars_in_use = Roadsheets.objects.filter(closed_timestamp__isnull=True, deleted=False). \
+                exclude(id=sheet_id).values_list('car', flat=True)
+            cars_accessible = Cars.objects.exclude(id__in=cars_in_use)
+
+            form.fields['car'].queryset = cars_accessible
+            form.fields['driver'].queryset = drivers_accessible
+            context['sheet_id'] = sheet_id
+
+        context['form'] = form
+
+        return render(request, 'roadsheet/roadsheet.html', context)
+
+# Удаление доступно только для черновика
+# TODO Переделать удаление черновика маршрута к ебеням!
+def roadsheet_delete(request, sheet_id):
+    if request.user.is_authenticated:
+        road_sheet = Roadsheets.objects.get(id=sheet_id)
+
+        road_sheet.deleted = True
+        road_sheet.save()
+
         return redirect(reverse('start'))
+    else:
+        return HttpResponse("Требуется авторизация")
 
-    cars_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('car', flat=True)
-    cars_accessible = Cars.objects.exclude(id__in=cars_in_use)
-    drivers_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('driver', flat=True)
-    drivers_accessible = Drivers.objects.exclude(id__in=drivers_in_use)
-    form.fields['car'].queryset = cars_accessible
-    form.fields['driver'].queryset = drivers_accessible
-    context = {'form': form}
-
-    return render(request, 'roadsheet/add_roadsheet.html', context)
 
 # Передача ТМЦ на рейс
 def doc_add_tmc(request):
@@ -89,35 +122,21 @@ def doc_add_tmc(request):
 
 
 
-
+# TODO Переделать открытие маршрута к ебеням!
 def begin_route(request, sheet_id):
     if request.user.is_authenticated:
         road_sheet = Roadsheets.objects.get(id=sheet_id)
-        if road_sheet.active == False:
-            road_sheet.active = True
-            road_sheet.draft = False
-            road_sheet.operator = request.user.username
-            road_sheet.execution_datetime = datetime.datetime.now()
-            road_sheet.save()
-        else:
-            return HttpResponse("Рейс уже открыт")
-        return redirect(reverse('start'))
-    else:
-        return HttpResponse("Требуется авторизация")
 
-def delete_route(request, sheet_id):
-    if request.user.is_authenticated:
-        road_sheet = Roadsheets.objects.get(id=sheet_id)
-        if road_sheet.active == False:
-            road_sheet.deleted = True
-            road_sheet.save()
 
-        else:
-            return HttpResponse("Рейс уже открыт")
+
+        road_sheet.operator = request.user.username
+        road_sheet.execution_datetime = datetime.datetime.now()
+        road_sheet.save()
 
         return redirect(reverse('start'))
     else:
         return HttpResponse("Требуется авторизация")
+
 
 
 #Формирование документов
