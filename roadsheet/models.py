@@ -97,9 +97,11 @@ class DocQualityTablet(models.Model):
     quality = models.ForeignKey(TabletQuality)
     timestamp = models.DateTimeField(auto_now_add=True, editable=True)
 
+
 class DocAddTmc(models.Model):
-    timestamp = models.DateTimeField(auto_now_add=True, editable = True, null=True)
     tablet = models.ForeignKey(Tablets, null=True)
     roadsheet = models.ForeignKey(Roadsheets, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, editable=True, null=True)
+    aparted_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
     def __unicode__(self):
         return str(self.tablet)

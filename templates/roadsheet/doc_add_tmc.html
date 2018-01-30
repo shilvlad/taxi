@@ -1,24 +1,6 @@
-{% extends 'base.html' %}
-
-{% block title %}
-    Главная
-{% endblock %}
-
-{% block content %}
-
-
     {%  if user.is_authenticated %}
-        <h1>Передать ТМЦ</h1>
-        <div class="form-group">
-
-            <form action="/doc_add_tmc/" method="POST">
-                {% csrf_token %}
-                <table>
-                    {{ form }}
-                </table>
-                <input type="submit" value="Создать" />
-            </form>
-        </div>
+    ФОРМА ДОКУМЕНТА
+    Передаем планшет
 
     {% else %}
         <div class="form-group">
@@ -38,4 +20,3 @@
 
     {% endif %}
 
-{% endblock %}

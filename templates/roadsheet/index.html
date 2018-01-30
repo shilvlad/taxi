@@ -120,24 +120,31 @@
 
 {% block info %}
     {% if perms.roadsheet.add_roadsheets %}
-    <div class="card text-black bg-secondary mb-3" style="max-width: 20rem;">
-        <div class="card-header">Оператору</div>
-        <div class="card-body">
-            <p class="card-text">Информация для оператора</p>
+        <div class="card text-black bg-secondary mb-3" style="max-width: 20rem;">
+            <div class="card-header">Оператору</div>
+            <div class="card-body">
+                <p>Передать ТМЦ</p>
+                <div class="form-group">
+                    <form action="/doc_add_tmc/" method="POST">
+                        {% csrf_token %}
+                            <table>{{ doc_add_tmc_form }}</table>
+                        <input type="submit" value="Передать" />
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
     {% endif %}
 
     {% if perms.roadsheet.add_tablets %}
-    <div class="card bg-light mb-3" style="max-width: 20rem;">
-        <div class="card-header">Сервисмену</div>
-        <div class="card-body">
-            <a href="/doc_part_tablet_sim/">Комплектация планшетов</a>
-            <br>
-            <a href="/doc_quality_tablet/">Состояние планшетов</a>
+        <div class="card bg-light mb-3" style="max-width: 20rem;">
+            <div class="card-header">Сервисмену</div>
+            <div class="card-body">
+                <a href="/doc_part_tablet_sim/">Комплектация планшетов</a>
+                <br>
+                <a href="/doc_quality_tablet/">Состояние планшетов</a>
 
+            </div>
         </div>
-    </div>
     {% endif %}
 
 {% endblock %}

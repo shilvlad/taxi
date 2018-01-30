@@ -111,12 +111,7 @@ class Migration(migrations.Migration):
                 ('internal_code', models.CharField(blank=True, max_length=100)),
             ],
         ),
-        migrations.CreateModel(
-            name='TMCSheet',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-            ],
-        ),
+
         migrations.AddField(
             model_name='doctabletsim',
             name='sim',

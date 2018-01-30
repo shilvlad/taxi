@@ -18,13 +18,18 @@ def start(request):
     roadsheets = Roadsheets.objects.filter(active=True, deleted=False)
     drafts_roadsheets = Roadsheets.objects.filter(draft=True, deleted=False)
     closed_roadsheets = Roadsheets.objects.filter(active=False, closed_datetime__gt=datetime.date.today())
+    doc_add_tmc_form = DocAddTmcForm()
+
 
     context = {
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
         'closed_roadsheets': closed_roadsheets,
+        'doc_add_tmc_form': doc_add_tmc_form,
     }
     return render(request, 'roadsheet/index.html', context)
+
+
 
 def roadsheet(request, sheet_id=None, Form=None):
     # Редактирование либо сохранение
@@ -47,13 +52,14 @@ def roadsheet(request, sheet_id=None, Form=None):
         form.save()
         return redirect(reverse('start'))
 
-    context = {'form': form}
     cars_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('car', flat=True)
     cars_accessible = Cars.objects.exclude(id__in=cars_in_use)
     drivers_in_use = Roadsheets.objects.filter(active=True, deleted=False).values_list('driver', flat=True)
     drivers_accessible = Drivers.objects.exclude(id__in=drivers_in_use)
     form.fields['car'].queryset = cars_accessible
     form.fields['driver'].queryset = drivers_accessible
+    context = {'form': form}
+
     return render(request, 'roadsheet/add_roadsheet.html', context)
 
 # Передача ТМЦ на рейс
@@ -62,13 +68,16 @@ def doc_add_tmc(request):
         form = DocAddTmcForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('start'))
+
+            context = {'form':form}
+            print form
+            return render(request, 'roadsheet/doc_add_tmc.html', context)
     else:
-        form = DocAddTmcForm()
+        return redirect(reverse('start'))
 
-    context = {'form': form}
 
-    return render(request, 'roadsheet/doc_add_tmc.html', context)
+
+
 
 
 

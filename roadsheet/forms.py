@@ -11,8 +11,6 @@ class RoadsheetForm(ModelForm):
         model = Roadsheets
         fields = '__all__'
         labels = {
-            "car_state": "Чистая?",
-            "car_fullgas": "Полный бак?",
             "driver": "Водитель",
             "car":"Автомобиль",
             "workload": "График",
@@ -39,5 +37,6 @@ class DocAddTmcForm(ModelForm):
         model = DocAddTmc
         fields = '__all__'
         labels = {
-
+            "tablet": "Планшет",
+            "roadsheet": "Рейс",
         }
