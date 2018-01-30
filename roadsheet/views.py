@@ -18,7 +18,7 @@ def start(request):
     roadsheets = Roadsheets.objects.filter(active=True, deleted=False)
     drafts_roadsheets = Roadsheets.objects.filter(draft=True, deleted=False)
     closed_roadsheets = Roadsheets.objects.filter(active=False, closed_datetime__gt=datetime.date.today())
-    
+
     context = {
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
