@@ -5,8 +5,8 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality,\
-    DocAddTmc
-from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm
+    DocAddTmc, DocRequest
+from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm, DocRequestForm
 import datetime
 
 # Create your views here.
@@ -251,9 +251,13 @@ def doc_create_request(request, sheet_id=None, tablet_id=None):
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
         # TODO формирование запроса на основе путевого листа
-        rs = Roadsheets.objects.get(id=sheet_id)
-        qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
-        context ={'rs':rs, 'sheet_id': sheet_id, 'qualitis':qualitis}
+        form = DocRequestForm()
+        print
+        #rs = Roadsheets.objects.get(id=sheet_id)
+        #qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
+
+        form.fields['tablet'].queryset =Tablets.objects.get(id=tablet_id)
+        context ={'rs':rs, 'sheet_id': sheet_id, 'qualitis':qualitis, 'form':form}
         return render(request, 'roadsheet/doc_create_request.html', context)
     pass
 

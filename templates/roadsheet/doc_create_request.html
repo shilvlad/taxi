@@ -15,10 +15,10 @@
 Состояние планшета после рейса
 <div class="form-group">
 
-    <form action="/doc_create_request/{{ sheet_id }}\{{ rs.get_tablet.id }}/" method="POST">
+    <form action="/doc_create_request/{{ sheet_id }}/{{ rs.tablet.id }}\" method="POST">
         {% csrf_token %}
         <table>
-            ФОРМА запроса на ремонт
+            {{ form }}
         </table>
         <input type="submit" value="Создать запрос">
 

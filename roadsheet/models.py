@@ -131,6 +131,8 @@ class DocAddTmc(models.Model):
 
 class DocRequest(models.Model):
     tablet = models.ForeignKey(Tablets, null=True)
+    tablet_break_request =  models.ManyToManyField(TabletQuality)
+    roadsheet = models.ForeignKey(Roadsheets, null=True)
     comment = models.CharField(max_length=10000, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=True)
     closed_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
