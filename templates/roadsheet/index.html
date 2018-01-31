@@ -14,7 +14,6 @@
                 <th scope="col">Водитель</th>
                 <th scope="col">Время отправки</th>
                 <th scope="col">Авто</th>
-                <th scope="col">Таблетка</th>
                 <th scope="col">Оформление</th>
                 <th scope="col">Удаление</th>
                 <th scope="col">Открыть рейс</th>
@@ -27,12 +26,9 @@
                     <td>{{ dr.driver }}</td>
                     <td>{{ dr.execution_datetime}}</td>
                     <td>{{ dr.car}}</td>
-                    <td>{{ dr.tablet}}</td>
-                    <td><a href="/print/{{ dr.id }}" onclick="window_open(href, 550, 600); return false;">Печать листа</a></td>
+                    <td><a href="/print/{{ dr.id }}" onclick="window_open(href, 550, 600); return false;">Печать</a></td>
                     <td><a href="/roadsheet_delete/{{ dr.id }}">Отменить</a></td>
-                    <td><a href="/begin_route/{{ dr.id }}" onClick="return confirm('Перейти?')">Поехали </a></td>
-
-
+                    <td><a href="/roadsheet_open/{{ dr.id }}" onClick="return confirm('Открыть рейс?')">Поехали </a></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -57,11 +53,11 @@
                 <tr class="table-primary">
                     <th scope="row">{{ r.id }}</th>
                     <td>{{ r.driver }}</td>
-                    <td>{{ r.execution_datetime}}</td>
+                    <td>{{ r.execution_timestamp}}</td>
                     <td>{{ r.car}}</td>
-                    <td>{{ r.tablet}} - {{ r.tablet.model }}</td>
+                    <td>{{ r.get_tablet}}</td>
                     <td></td>
-                    <td><a href="/close_route/{{ r.id }}/">Закрыть</a></td>
+                    <td><a href="/roadsheet_close/{{ r.id }}/" onClick="return confirm('Закрыть рейс?')">Закрыть</a></td>
 
 
                 </tr>
@@ -88,10 +84,10 @@
                 <tr class="table-primary">
                     <th scope="row">{{ r.id }}</th>
                     <td>{{ r.driver }}</td>
-                    <td>{{ r.execution_datetime}}</td>
-                    <td>{{ r.car}}</td>
-                    <td>{{ r.tablet}}</td>
-                    <td>{{ r.closed_datetime}}</td>
+                    <td>{{ r.execution_timestamp }}</td>
+                    <td>{{ r.car }}</td>
+                    <td>{{ r.get_tablet }}</td>
+                    <td>{{ r.closed_timestamp}}</td>
                 </tr>
             {% endfor %}
             </tbody>

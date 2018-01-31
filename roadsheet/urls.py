@@ -10,8 +10,10 @@ urlpatterns = [
     url(r'^logout/', views.user_logout, name='logout'),
 
     # Путевые листы
-    url(r'^roadsheet/(?P<sheet_id>[0-9]+)/$', views.roadsheet, name='roadsheet'),
-    url(r'^roadsheet/', views.roadsheet, name='roadsheet'),
+    url(r'^roadsheet/(?P<sheet_id>[0-9]+)/$', views.roadsheet, name='roadsheet'), #OK
+    url(r'^roadsheet/', views.roadsheet, name='roadsheet'), # OK
+    url(r'^roadsheet_open/(?P<sheet_id>[0-9]+)/$', views.roadsheet_open, name='roadsheet_open'), # OK
+    url(r'^roadsheet_close/(?P<sheet_id>[0-9]+)/$', views.roadsheet_close, name='roadsheet_close'),
     url(r'^roadsheet_delete/(?P<sheet_id>[0-9]+)/$', views.roadsheet_delete, name='roadsheet_delete'),
 
 
@@ -21,10 +23,10 @@ urlpatterns = [
     url(r'^doc_apart_tablet_sim/(?P<doc_id>[0-9]+)/$', views.doc_apart_tablet_sim, name='doc_apart_tablet_sim'),
     url(r'^doc_quality_tablet/', views.doc_quality_tablet, name='doc_quality_tablet'),
     url(r'^print/(?P<sheet_id>[0-9]+)/$', views.print_roadsheet, name='print_roadsheet'),
-    url(r'^begin_route/(?P<sheet_id>[0-9]+)/$', views.begin_route, name='begin_route'),
 
 
-    url(r'^close_route/(?P<sheet_id>[0-9]+)/$', views.close_route, name='close_route'),
+
+
 
 
 ]

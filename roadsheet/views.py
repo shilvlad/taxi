@@ -4,7 +4,8 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
-from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality
+from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality,\
+    DocAddTmc
 from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm
 import datetime
 
@@ -14,13 +15,18 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+# Главная вьюшка
 def start(request):
 
     drafts_roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=True, deleted=False)
-    roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=False, deleted=False)
-    closed_roadsheets = Roadsheets.objects.filter( closed_timestamp__gt=datetime.date.today())
-    doc_add_tmc_form = DocAddTmcForm()
+    roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=False, closed_timestamp__isnull= True, deleted=False)
+    closed_roadsheets = Roadsheets.objects.filter(closed_timestamp__gt=datetime.date.today())
 
+    used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True)
+    print closed_roadsheets
+    print used_tablets
+
+    doc_add_tmc_form = DocAddTmcForm()
 
     context = {
         'roadsheets': roadsheets,
@@ -89,19 +95,49 @@ def roadsheet(request, sheet_id=None):
 
         return render(request, 'roadsheet/roadsheet.html', context)
 
-# Удаление доступно только для черновика
-# TODO Переделать удаление черновика маршрута к ебеням!
+# Удаление рейса (только для неоткрытых рейсов)
 def roadsheet_delete(request, sheet_id):
+    # TODO Переделать удаление черновика маршрута к ебеням!
+    if request.user.is_authenticated:
+        rs = Roadsheets.objects.get(id=sheet_id)
+        if rs.execution_timestamp is None and rs.closed_timestamp is None:
+            rs.deleted = True
+            rs.save()
+            return redirect(reverse('start'))
+        else:
+            return HttpResponse("Ой, гонево какое!")
+
+
+    else:
+        return HttpResponse("Требуется авторизация")
+
+# Открытие рейса
+def roadsheet_open(request, sheet_id):
+    # TODO Переделать открытие маршрута к ебеням!
     if request.user.is_authenticated:
         road_sheet = Roadsheets.objects.get(id=sheet_id)
-
-        road_sheet.deleted = True
+        road_sheet.operator_open = request.user.username
+        road_sheet.execution_timestamp = datetime.datetime.now()
         road_sheet.save()
 
         return redirect(reverse('start'))
     else:
         return HttpResponse("Требуется авторизация")
 
+# закрытие рейса
+def roadsheet_close(request, sheet_id=None):
+    if request.user.is_authenticated:
+        if sheet_id == None:
+            return HttpResponse("Не указан рейс")
+        else:
+            # TODO Проверка перед закрытием
+            road_sheet = Roadsheets.objects.get(id=sheet_id)
+            road_sheet.closed_timestamp = datetime.datetime.now()
+            road_sheet.operator_close = request.user.username
+            road_sheet.save()
+            return redirect(reverse('start'))
+    else:
+        return HttpResponse("Требуется авторизация")
 
 # Передача ТМЦ на рейс
 def doc_add_tmc(request):
@@ -111,33 +147,11 @@ def doc_add_tmc(request):
             form.save()
 
             context = {'form':form}
-            print form
-            return render(request, 'roadsheet/doc_add_tmc.html', context)
+
+            # return render(request, 'roadsheet/doc_add_tmc.html', context)
+            return redirect(reverse('start'))
     else:
         return redirect(reverse('start'))
-
-
-
-
-
-
-
-# TODO Переделать открытие маршрута к ебеням!
-def begin_route(request, sheet_id):
-    if request.user.is_authenticated:
-        road_sheet = Roadsheets.objects.get(id=sheet_id)
-
-
-
-        road_sheet.operator = request.user.username
-        road_sheet.execution_datetime = datetime.datetime.now()
-        road_sheet.save()
-
-        return redirect(reverse('start'))
-    else:
-        return HttpResponse("Требуется авторизация")
-
-
 
 #Формирование документов
 def doc_part_tablet_sim(request):
@@ -198,8 +212,6 @@ def doc_quality_tablet(request):
 
     return render(request, 'roadsheet/doc_quality_tablet.html', context)
 
-
-
 #Печать документов
 def print_roadsheet(request, sheet_id):
     road_sheet = Roadsheets.objects.get(id=sheet_id)
@@ -209,9 +221,7 @@ def print_roadsheet(request, sheet_id):
     return render(request, 'roadsheet/print_roadsheet.html', context)
 
 
-
 # Авторизация
-
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -226,23 +236,7 @@ def user_login(request):
         else:
             print "Invalid login details: {0}, {1}".format(username, password)
             return HttpResponse("Invalid login details supplied.")
-
-
 def user_logout(request):
     logout(request)
     return render(request, 'roadsheet/index.html',{'username':request.user.username})
 
-def close_route(request, sheet_id=None):
-    if request.user.is_authenticated:
-        if sheet_id == None:
-            return HttpResponse("Не указан рейс")
-        else:
-            #TODO Проверка перед закрытием
-            road_sheet = Roadsheets.objects.get(id=sheet_id)
-            road_sheet.active = False
-            road_sheet.closed_datetime = datetime.datetime.now()
-            road_sheet.operator = request.user.username
-            road_sheet.save()
-            return redirect(reverse('start'))
-    else:
-        return HttpResponse("Требуется авторизация")

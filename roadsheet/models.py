@@ -77,10 +77,13 @@ class Roadsheets(models.Model):
     driver = models.ForeignKey(Drivers)
     car = models.ForeignKey(Cars)
     workload = models.ForeignKey(DriverWorkload)
-    operator =  models.CharField(max_length=100, editable = False)
+    operator_open = models.CharField(max_length=100, editable = False)
+    operator_close = models.CharField(max_length=100, editable = False)
     deleted = models.BooleanField(default=False, editable = False)
     def __unicode__(self):
         return str(self.id)
+    def get_tablet(self):
+        return DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(roadsheet=self)
 
 class DocTabletSim(models.Model):
     tablet = models.ForeignKey(Tablets)
