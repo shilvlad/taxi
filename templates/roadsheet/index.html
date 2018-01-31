@@ -6,92 +6,98 @@
 
 {% block content %}
 
-        <h1>Черновики</h1>
-        <table class="table table-hover">
-            <thead>
-            <tr class="info">
-                <th scope="col">№</th>
-                <th scope="col">Водитель</th>
-                <th scope="col">Время отправки</th>
-                <th scope="col">Авто</th>
-                <th scope="col">Оформление</th>
-                <th scope="col">Удаление</th>
-                <th scope="col">Открыть рейс</th>
+    <h1>Черновики</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <th scope="col">№</th>
+            <th scope="col">Водитель</th>
+            <th scope="col">Время отправки</th>
+            <th scope="col">Авто</th>
+            <th scope="col">Оформление</th>
+            <th scope="col">Удаление</th>
+            <th scope="col">Открыть рейс</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for dr in drafts_roadsheets %}
+            <tr class="table-primary">
+                <th scope="row"><a href="/roadsheet/{{ dr.id }}/" onclick="window_open(href, 550, 600); return false;">{{ dr.id }}</a></th>
+                <td>{{ dr.driver }}</td>
+                <td>{{ dr.execution_datetime}}</td>
+                <td>{{ dr.car}}</td>
+                <td><a href="/print/{{ dr.id }}" onclick="window_open(href, 550, 600); return false;">Печать</a></td>
+                <td><a href="/roadsheet_delete/{{ dr.id }}">Отменить</a></td>
+                <td><a href="/roadsheet_open/{{ dr.id }}" onClick="return confirm('Открыть рейс?')">Поехали </a></td>
             </tr>
-            </thead>
-            <tbody>
-            {% for dr in drafts_roadsheets %}
-                <tr class="table-primary">
-                    <th scope="row"><a href="/roadsheet/{{ dr.id }}/" onclick="window_open(href, 550, 600); return false;">{{ dr.id }}</a></th>
-                    <td>{{ dr.driver }}</td>
-                    <td>{{ dr.execution_datetime}}</td>
-                    <td>{{ dr.car}}</td>
-                    <td><a href="/print/{{ dr.id }}" onclick="window_open(href, 550, 600); return false;">Печать</a></td>
-                    <td><a href="/roadsheet_delete/{{ dr.id }}">Отменить</a></td>
-                    <td><a href="/roadsheet_open/{{ dr.id }}" onClick="return confirm('Открыть рейс?')">Поехали </a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% endfor %}
+        </tbody>
+    </table>
 
 
-        <h1>Список активных рейсов</h1>
-        <table class="table table-hover">
-            <thead>
-            <tr class="info">
-                <th scope="col">№</th>
-                <th scope="col">Водитель</th>
-                <th scope="col">Время отправки</th>
-                <th scope="col">Авто</th>
-                <th scope="col">Таблетка</th>
-                <th scope="col">Что-нибудь</th>
-                <th scope="col">Закрытие</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for r in roadsheets %}
-                <tr class="table-primary">
-                    <th scope="row">{{ r.id }}</th>
-                    <td>{{ r.driver }}</td>
-                    <td>{{ r.execution_timestamp}}</td>
-                    <td>{{ r.car}}</td>
-                    <td>{{ r.get_tablet}}</td>
-                    <td></td>
-                    <td><a href="/roadsheet_close/{{ r.id }}/" onClick="return confirm('Закрыть рейс?')">Закрыть</a></td>
+    <h1>Список активных рейсов</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <th scope="col">№</th>
+            <th scope="col">Водитель</th>
+            <th scope="col">Время отправки</th>
+            <th scope="col">Авто</th>
+            <th scope="col">Таблетка</th>
+            <th scope="col">Что-нибудь</th>
+            <th scope="col">Закрытие</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in roadsheets %}
+            <tr class="table-primary">
+                <th scope="row">{{ r.id }}</th>
+                <td>{{ r.driver }}</td>
+                <td>{{ r.execution_timestamp}}</td>
+                <td>{{ r.car}}</td>
+                <td>
+                    {% if  r.get_tablet is None%}
+                        <a href="/doc_add_tmc/{{ r.id }}/" onclick="window_open(href, 300, 300); return false;">Выдать</a>
+                    {% else %}
+                        {{ r.get_tablet }}
+                    {% endif %}
+                </td>
+                <td></td>
+                <td><a href="/roadsheet_close/{{ r.id }}/" onclick="window_open(href, 500, 500); return false;">Закрыть</a></td>
 
-
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-
-
-        <h1>Закрытые сегодня рейсы</h1>
-        <table class="table table-hover">
-            <thead>
-            <tr class="info">
-                <th scope="col">№</th>
-                <th scope="col">Водитель</th>
-                <th scope="col">Время отправки</th>
-                <th scope="col">Авто</th>
-                <th scope="col">Таблетка</th>
-                <th scope="col">Время прибытия</th>
 
             </tr>
-            </thead>
-            <tbody>
-            {% for r in closed_roadsheets %}
-                <tr class="table-primary">
-                    <th scope="row">{{ r.id }}</th>
-                    <td>{{ r.driver }}</td>
-                    <td>{{ r.execution_timestamp }}</td>
-                    <td>{{ r.car }}</td>
-                    <td>{{ r.get_tablet }}</td>
-                    <td>{{ r.closed_timestamp}}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+    <h1>Закрытые сегодня рейсы</h1>
+    <table class="table table-hover">
+        <thead>
+        <tr class="info">
+            <th scope="col">№</th>
+            <th scope="col">Водитель</th>
+            <th scope="col">Время отправки</th>
+            <th scope="col">Авто</th>
+            <th scope="col">Таблетка</th>
+            <th scope="col">Время прибытия</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for r in closed_roadsheets %}
+            <tr class="table-primary">
+                <th scope="row">{{ r.id }}</th>
+                <td>{{ r.driver }}</td>
+                <td>{{ r.execution_timestamp }}</td>
+                <td>{{ r.car }}</td>
+                <td>{{ r.get_tablet }}</td>
+                <td>{{ r.closed_timestamp}}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 
 
@@ -99,19 +105,7 @@
 
 {% block info %}
     {% if perms.roadsheet.add_roadsheets %}
-        <div class="card text-black bg-secondary mb-3" style="max-width: 20rem;">
-            <div class="card-header">Оператору</div>
-            <div class="card-body">
-                <p>Передать ТМЦ</p>
-                <div class="form-group">
-                    <form action="/doc_add_tmc/" method="POST">
-                        {% csrf_token %}
-                            <table>{{ doc_add_tmc_form }}</table>
-                        <input type="submit" value="Передать" />
-                    </form>
-                </div>
-            </div>
-        </div>
+
     {% endif %}
 
     {% if perms.roadsheet.add_tablets %}

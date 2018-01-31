@@ -1,0 +1,44 @@
+{% load static %}
+<script src="{% static "taxi.js" %} "></script>
+
+Закрытие путевого листа {{ roadsheet.id }}
+<br><br>
+Водитель: {{ rs.driver.first_name }} {{ rs.driver.middle_name }} {{ rs.driver.last_name }}
+<br>
+Автомобиль: {{ rs.car.car_model }}
+<br>
+Регистрационный номер: {{ rs.car.reg_number }}
+<br>
+Бортовой номер: {{ rs.car.board_number }}
+<br>
+График работы: {{ rs.workload }}
+<br><br><br>
+Материальные ценности
+<br><br>
+
+Модель планшета: {{ rs.get_tablet.tablet.model }}
+<br>
+Баркод планшета: {{ rs.get_tablet.tablet.internal_code }}
+<br>
+Серийный номер: {{ rs.get_tablet.tablet.serial_number }}
+<br>
+Текущее состояние: {% for q in qualitis %} {{ q.status }} {% endfor %}
+<a href="\doc_create_request\{{ sheet_id }}\{{ rs.get_tablet.id }}" onclick="window_open(href, 500,500); return false;"> Не соответствует</a>
+
+
+
+<div class="form-group">
+
+    <form action="/roadsheet_close/{{ sheet_id }}/" method="POST">
+        {% csrf_token %}
+        <table>
+
+        </table>
+        <input type="submit" value="Сохранить">
+
+
+    </form>
+
+</div>
+
+

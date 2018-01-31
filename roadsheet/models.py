@@ -68,6 +68,12 @@ class Tablets(models.Model):
     internal_code = models.CharField(max_length=100,blank=True, editable = True)
     def __unicode__(self):
         return str(self.internal_code)
+    def get_doc_quality_tablet(self):
+        try:
+            tmp = DocQualityTablet.objects.get(tablet=self)
+        except Exception:
+            tmp = None
+        return tmp
 
 # Путевые листы
 class Roadsheets(models.Model):
@@ -83,7 +89,13 @@ class Roadsheets(models.Model):
     def __unicode__(self):
         return str(self.id)
     def get_tablet(self):
-        return DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(roadsheet=self)
+        try:
+            tmp = DocAddTmc.objects.get(roadsheet=self)
+        except Exception:
+            tmp = None
+        return tmp
+
+
 
 class DocTabletSim(models.Model):
     tablet = models.ForeignKey(Tablets)
@@ -96,8 +108,16 @@ class DocTabletSim(models.Model):
 
 class DocQualityTablet(models.Model):
     tablet = models.ForeignKey(Tablets)
-    quality = models.ForeignKey(TabletQuality)
+    quality = models.ManyToManyField(TabletQuality)
     timestamp = models.DateTimeField(auto_now_add=True, editable=True)
+    def __unicode__(self):
+        return str(str(self.tablet) + str(' - ') + str(self.quality))
+    def get_quality(self):
+        try:
+            tmp = TabletQuality.objects.filter(tablet=self)
+        except Exception:
+            tmp = None
+        return tmp
 
 
 class DocAddTmc(models.Model):
@@ -107,3 +127,14 @@ class DocAddTmc(models.Model):
     aparted_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
     def __unicode__(self):
         return str(self.tablet)
+
+
+class DocRequest(models.Model):
+    tablet = models.ForeignKey(Tablets, null=True)
+    comment = models.CharField(max_length=10000, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=True)
+    closed_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
+    author = models.CharField(max_length=100, editable=False)
+    def __unicode__(self):
+        return str(self.tablet)
+

@@ -21,13 +21,7 @@ def start(request):
     drafts_roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=True, deleted=False)
     roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=False, closed_timestamp__isnull= True, deleted=False)
     closed_roadsheets = Roadsheets.objects.filter(closed_timestamp__gt=datetime.date.today())
-
-    used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True)
-    print closed_roadsheets
-    print used_tablets
-
     doc_add_tmc_form = DocAddTmcForm()
-
     context = {
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
@@ -97,7 +91,6 @@ def roadsheet(request, sheet_id=None):
 
 # Удаление рейса (только для неоткрытых рейсов)
 def roadsheet_delete(request, sheet_id):
-    # TODO Переделать удаление черновика маршрута к ебеням!
     if request.user.is_authenticated:
         rs = Roadsheets.objects.get(id=sheet_id)
         if rs.execution_timestamp is None and rs.closed_timestamp is None:
@@ -105,55 +98,94 @@ def roadsheet_delete(request, sheet_id):
             rs.save()
             return redirect(reverse('start'))
         else:
-            return HttpResponse("Ой, гонево какое!")
-
-
+            return HttpResponse("Рейс открыт или не существует")
     else:
         return HttpResponse("Требуется авторизация")
 
 # Открытие рейса
 def roadsheet_open(request, sheet_id):
-    # TODO Переделать открытие маршрута к ебеням!
     if request.user.is_authenticated:
-        road_sheet = Roadsheets.objects.get(id=sheet_id)
-        road_sheet.operator_open = request.user.username
-        road_sheet.execution_timestamp = datetime.datetime.now()
-        road_sheet.save()
-
-        return redirect(reverse('start'))
-    else:
-        return HttpResponse("Требуется авторизация")
-
-# закрытие рейса
-def roadsheet_close(request, sheet_id=None):
-    if request.user.is_authenticated:
-        if sheet_id == None:
-            return HttpResponse("Не указан рейс")
-        else:
-            # TODO Проверка перед закрытием
-            road_sheet = Roadsheets.objects.get(id=sheet_id)
-            road_sheet.closed_timestamp = datetime.datetime.now()
-            road_sheet.operator_close = request.user.username
-            road_sheet.save()
+        rs = Roadsheets.objects.get(id=sheet_id)
+        if rs.execution_timestamp is None:
+            rs.operator_open = request.user.username
+            rs.execution_timestamp = datetime.datetime.now()
+            rs.save()
             return redirect(reverse('start'))
+        else:
+            return HttpResponse("Рейс уже открыт")
     else:
         return HttpResponse("Требуется авторизация")
+
+# Закрытие рейса
+def roadsheet_close(request, sheet_id=None):
+    if sheet_id == None:
+        return HttpResponse("Не указан рейс")
+
+    if request.method == 'POST':
+
+        return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+
+    else:
+        # TODO Проверка всего чего только можно перед закрытием
+        rs = Roadsheets.objects.get(id=sheet_id)
+        qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
+        context ={'rs':rs, 'sheet_id': sheet_id, 'qualitis':qualitis}
+        return render(request, 'roadsheet/roadsheet_close.html', context)
+
+
+
+
+
+# ----------------------
+#Формирование документов
+# ----------------------
 
 # Передача ТМЦ на рейс
-def doc_add_tmc(request):
-    if request.method == 'POST':
-        form = DocAddTmcForm(request.POST)
-        if form.is_valid():
-            form.save()
+# --------------------
+# Если POST то сохраняем
+# Если GET то отбор в зависимости от указанного sheet_id
+def doc_add_tmc(request, sheet_id=None):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = DocAddTmcForm(request.POST)
+            if form.is_valid():
+                form.save()
+                return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+        else:
+            if sheet_id is None:
+                form = DocAddTmcForm()
+                # Отбор всех доступных планшетов и всех рейсов
+                rs_a = Roadsheets.objects.filter(closed_timestamp__isnull=True, execution_timestamp__isnull=False)
+                used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
+                tblt_a = Tablets.objects.exclude(id__in = used_tablets)
+                print used_tablets
+                print tblt_a
+                # TODO Надо исключить поломаные
+                form.fields['roadsheet'].queryset = rs_a
+                form.fields['tablet'].queryset = tblt_a
+            else:
+                # TODO Отбор для смены планшета
+                # Отбор всех доступных планшетов и одного рейса
+                # TODO Отбор для фиксированного планшета
+                form = DocAddTmcForm()
+                #form = DocAddTmcForm(instance=DocAddTmc.objects.get(roadsheet=sheet_id))
+                rs_a = Roadsheets.objects.filter(id = sheet_id)
+                used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True ).values_list('tablet', flat=True)
+                print used_tablets
+                tblt_a = Tablets.objects.exclude(id__in=used_tablets)
+                print tblt_a
+                form = DocAddTmcForm(initial={'roadsheet':rs_a})
+                # TODO Надо исключить поломаные
+                form.fields['roadsheet'].queryset = rs_a
+                form.fields['tablet'].queryset = tblt_a
+                # TODO Установить значение SELECTED
 
-            context = {'form':form}
-
-            # return render(request, 'roadsheet/doc_add_tmc.html', context)
-            return redirect(reverse('start'))
+            context = {'form': form}
+            return render(request, 'roadsheet/doc_add_tmc.html', context)
     else:
-        return redirect(reverse('start'))
+        return HttpResponse("Требуется авторизация")
 
-#Формирование документов
+# Комплектация планшета симкой
 def doc_part_tablet_sim(request):
     if request.method == 'POST':
         form = DocTabletSimForm(request.POST)
@@ -175,7 +207,7 @@ def doc_part_tablet_sim(request):
 
     return render(request, 'roadsheet/doc_part_tablet_sim.html', context)
 
-#Расформировываем комплект
+# Раскомплектация планшета симкой
 def doc_apart_tablet_sim(request, doc_id):
     if request.method == 'GET':
         doc = DocTabletSim.objects.get(id = doc_id)
@@ -187,7 +219,7 @@ def doc_apart_tablet_sim(request, doc_id):
     else:
         return HttpResponse("Так не надо делать")
 
-    # Установка качества планшетов
+# Установка качества планшетов
 def doc_quality_tablet(request):
     if request.method == 'POST':
         form = DocQualityTabletForm(request.POST)
@@ -212,6 +244,24 @@ def doc_quality_tablet(request):
 
     return render(request, 'roadsheet/doc_quality_tablet.html', context)
 
+# Запрос на ремонт
+def doc_create_request(request, sheet_id=None, tablet_id=None):
+    if request.method == 'POST':
+        # TODO Создание запроса на ремонт
+        return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+    else:
+        # TODO формирование запроса на основе путевого листа
+        rs = Roadsheets.objects.get(id=sheet_id)
+        qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
+        context ={'rs':rs, 'sheet_id': sheet_id, 'qualitis':qualitis}
+        return render(request, 'roadsheet/doc_create_request.html', context)
+    pass
+
+
+
+
+# Печатные формы
+# --------------
 #Печать документов
 def print_roadsheet(request, sheet_id):
     road_sheet = Roadsheets.objects.get(id=sheet_id)

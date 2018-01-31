@@ -1,32 +1,18 @@
-{% extends 'base.html' %}
 
-{% block title %}
-    Главная
-{% endblock %}
 
 {% block content %}
 
-<script>
-function f() {
-    window.opener.location.reload();
-    window.close();
 
 
-
-}
-
-</script>
-
-        <h1>Формирование путевого листа</h1>
+        Формирование путевого листа
         <div class="form-group">
 
             <form action="/roadsheet/{{ sheet_id }}/" method="POST">
                 {% csrf_token %}
                 <table>
-
                     {{ form }}
                 </table>
-                <input type="submit" value="Сохранить" onclick=""/>
+                <input type="submit" value="Сохранить">
             </form>
         </div>
 
