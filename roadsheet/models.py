@@ -133,10 +133,11 @@ class DocRequest(models.Model):
     tablet = models.ForeignKey(Tablets, null=True)
     tablet_break_request =  models.ManyToManyField(TabletQuality)
     roadsheet = models.ForeignKey(Roadsheets, null=True)
-    comment = models.CharField(max_length=10000, null=True)
+    comment = models.CharField(max_length=10000, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=True)
     closed_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
-    author = models.CharField(max_length=100, editable=False)
+    author = models.CharField(max_length=100, editable=False, null=True, blank=True)
+
     def __unicode__(self):
         return str(self.tablet)
 

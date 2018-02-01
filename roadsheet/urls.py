@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^doc_create_request/(?P<sheet_id>[0-9]+)/(?P<tablet_id>[0-9]+)/$', views.doc_create_request, name='doc_create_request'),
 
 
+
     url(r'^doc_part_tablet_sim/', views.doc_part_tablet_sim, name='doc_part_tablet_sim'),
     url(r'^doc_apart_tablet_sim/(?P<doc_id>[0-9]+)/$', views.doc_apart_tablet_sim, name='doc_apart_tablet_sim'),
     url(r'^doc_quality_tablet/', views.doc_quality_tablet, name='doc_quality_tablet'),

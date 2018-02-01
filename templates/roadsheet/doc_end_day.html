@@ -1,0 +1,57 @@
+Закрыть смену
+
+Планшеты на складе
+<table class="table table-hover">
+    <thead>
+    <tr class="info">
+        <th scope="col">№</th>
+        <th scope="col">Планшет</th>
+        <th scope="col">Код</th>
+        <th scope="col">Серийный номер</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for t in tblt_a %}
+        <tr class="table-primary">
+            <td>{{ t.id }}</td>
+            <td>{{ t.model }}</td>
+            <td>{{ t.internal_code }}</td>
+            <td>{{ t.serial_number }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+Планшеты в рейсах
+<table class="table table-hover">
+    <thead>
+    <tr class="info">
+        <th scope="col">№</th>
+        <th scope="col">Планшет</th>
+        <th scope="col">Код</th>
+        <th scope="col">Серийный номер</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tu in used_tablets %}
+        <tr class="table-primary">
+            <td>{{ tu.id }}</td>
+            <td>{{ tu.model }}</td>
+            <td>{{ tu.internal_code }}</td>
+            <td>{{ tu.serial_number }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="form-group">
+    <form action="/logout/" method="POST">
+        {% csrf_token %}
+        <table>
+
+        </table>
+        <input type="submit" value="Сдать смену">
+    </form>
+</div>
+
+

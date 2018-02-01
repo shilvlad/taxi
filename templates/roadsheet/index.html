@@ -104,11 +104,10 @@
 {% endblock %}
 
 {% block info %}
-    {% if perms.roadsheet.add_roadsheets %}
 
-    {% endif %}
 
-    {% if perms.roadsheet.add_tablets %}
+
+
         <div class="card bg-light mb-3" style="max-width: 20rem;">
             <div class="card-header">Сервисмену</div>
             <div class="card-body">
@@ -118,6 +117,36 @@
 
             </div>
         </div>
-    {% endif %}
+
+        <div class="card bg-light mb-3" style="max-width: 40rem;">
+            <div class="card-header">Заявки на ремонт</div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead>
+                    <tr class="info">
+                        <th scope="col">№</th>
+                        <th scope="col">Планшет</th>
+                        <th scope="col">Время заявки</th>
+                        <th scope="col">Номер рейса</th>
+
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for rr in repair_requests %}
+                        <tr class="table-primary">
+                            <td>{{ rr.id }}</td>
+                            <td>{{ rr.tablet }}</td>
+                            <td>{{ rr.timestamp }}</td>
+                            <td>{{ rr.roadsheet }}</td>
+
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
 
 {% endblock %}

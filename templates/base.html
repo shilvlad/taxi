@@ -41,7 +41,7 @@
                     <a class="nav-link" href="/doc_add_tmc/" onclick="window_open(href, 300, 300); return false;">Выдать ТМЦ<span class="sr-only" >(current)</span></a>
                 </li>
             </ul>
-            <span class="badge badge-primary">Версия: v.0.1</span>
+            <span class="badge badge-primary">Версия: v.0.2</span>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="text" placeholder="Бортовой номер">
                 <button class="btn btn-secondary my-2 my-sm-0" type="submit">Поиск</button>
@@ -49,7 +49,7 @@
             </form>
 
             <a class="nav-link" href="\admin">Админка</a>
-            <a class="nav-link" href="\logout">Выйти</a>
+            <a class="nav-link" href="\logout" onclick="window_open(href, 500, 500); return false;">Выйти</a>
 
 
 
@@ -60,19 +60,15 @@
     </nav>
 
 
-    <div class="row">
-        <div class="col-xs-120 col-sm-1">
 
-        </div>
-        <div class="col-xs-120 col-sm-8">
-            {% block content %}{% endblock %}
-        </div>
-        <div class="col-xs-120 col-sm-3">
+    {% if perms.roadsheet.add_roadsheets %}
+        {% block content %}{% endblock %}
+    {% endif %}
 
-            {% block info%}{% endblock %}
-        </div>
-    </div>
 
+    {% if perms.roadsheet.add_tablets %}
+        {% block info%}{% endblock %}
+    {% endif %}
 {% else %}
     <div class="form-group">
         <form id="login_form" method="post" action="/login/">

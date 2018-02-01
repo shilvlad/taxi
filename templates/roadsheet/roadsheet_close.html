@@ -23,7 +23,7 @@
 Серийный номер: {{ rs.get_tablet.tablet.serial_number }}
 <br>
 Текущее состояние: {% for q in qualitis %} {{ q.status }} {% endfor %}
-<a href="\doc_create_request\{{ sheet_id }}\{{ rs.get_tablet.id }}" onclick="window_open(href, 500,500); return false;"> Не соответствует</a>
+<a href="\doc_create_request\{{ sheet_id }}\{{ rs.get_tablet.tablet.id }}" onclick="window_open(href, 500,500); return false;"> Не соответствует</a>
 
 
 

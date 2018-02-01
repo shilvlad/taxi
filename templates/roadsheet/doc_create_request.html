@@ -1,21 +1,23 @@
 Создать запрос на ремонт
-
+{{ request.user.username}}
 Состояние планшета перед рейсом
 <br><br>
 <br><br>
-
+ID планшета: {{ rs.get_tablet.tablet.id }}
+<br>
 Модель планшета: {{ rs.get_tablet.tablet.model }}
 <br>
 Баркод планшета: {{ rs.get_tablet.tablet.internal_code }}
 <br>
 Серийный номер: {{ rs.get_tablet.tablet.serial_number }}
 <br>
-Текущее состояние: {% for q in qualitis %} {{ q.status }} {% endfor %}
+Cостояние: {% for q in qualities %} {{ q.status }}, {% endfor %}
 <br><br>
 Состояние планшета после рейса
+
 <div class="form-group">
 
-    <form action="/doc_create_request/{{ sheet_id }}/{{ rs.tablet.id }}\" method="POST">
+    <form action="/doc_create_request/{{ sheet_id }}/{{ rs.get_tablet.tablet.id }}\" method="POST">
         {% csrf_token %}
         <table>
             {{ form }}

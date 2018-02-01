@@ -3,7 +3,7 @@ from django.contrib import admin
 
 # Register your models here.
 from .models import Roadsheets, Drivers, Tablets, Cars, CarManufacturer, CarModel, DriverWorkload, \
-    TabletQuality, DocTabletSim, SimCards, DocAddTmc, DocQualityTablet
+    TabletQuality, DocTabletSim, SimCards, DocAddTmc, DocQualityTablet, DocRequest
 
 admin.site.register(Drivers)
 admin.site.register(Roadsheets)
@@ -17,3 +17,5 @@ admin.site.register(SimCards)
 admin.site.register(DocTabletSim)
 admin.site.register(DocAddTmc)
 admin.site.register(DocQualityTablet)
+admin.site.register(DocRequest)
+

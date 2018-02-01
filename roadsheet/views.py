@@ -7,7 +7,10 @@ from django.shortcuts import redirect
 from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality,\
     DocAddTmc, DocRequest
 from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm, DocRequestForm
+from django import forms
 import datetime
+
+
 
 # Create your views here.
 
@@ -21,13 +24,18 @@ def start(request):
     drafts_roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=True, deleted=False)
     roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=False, closed_timestamp__isnull= True, deleted=False)
     closed_roadsheets = Roadsheets.objects.filter(closed_timestamp__gt=datetime.date.today())
-    doc_add_tmc_form = DocAddTmcForm()
+
+    repair_requests = DocRequest.objects.filter(closed_timestamp__isnull=True)
+
+
     context = {
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
         'closed_roadsheets': closed_roadsheets,
-        'doc_add_tmc_form': doc_add_tmc_form,
+        'repair_requests':repair_requests,
     }
+
+
     return render(request, 'roadsheet/index.html', context)
 
 
@@ -46,6 +54,7 @@ def roadsheet(request, sheet_id=None):
 
         form = RoadsheetForm(request.POST)
         if form.is_valid():
+
             form.save()
             if sheet_id is not None:
                 print "DELETE "
@@ -122,13 +131,19 @@ def roadsheet_close(request, sheet_id=None):
         return HttpResponse("Не указан рейс")
 
     if request.method == 'POST':
-
+        print sheet_id
+        rs = Roadsheets.objects.get(id=sheet_id)
+        rs.closed_timestamp = datetime.datetime.now()
+        rs.save()
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
 
     else:
         # TODO Проверка всего чего только можно перед закрытием
         rs = Roadsheets.objects.get(id=sheet_id)
-        qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
+        try:
+            qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
+        except Exception:
+            qualitis = None
         context ={'rs':rs, 'sheet_id': sheet_id, 'qualitis':qualitis}
         return render(request, 'roadsheet/roadsheet_close.html', context)
 
@@ -178,6 +193,7 @@ def doc_add_tmc(request, sheet_id=None):
                 # TODO Надо исключить поломаные
                 form.fields['roadsheet'].queryset = rs_a
                 form.fields['tablet'].queryset = tblt_a
+                form.fields['roadsheet'].empty_label = None
                 # TODO Установить значение SELECTED
 
             context = {'form': form}
@@ -204,7 +220,7 @@ def doc_part_tablet_sim(request):
     form.fields['sim'].queryset = sim_accessible
 
     context = {'form': form, 'tablets':tablets}
-
+    print form
     return render(request, 'roadsheet/doc_part_tablet_sim.html', context)
 
 # Раскомплектация планшета симкой
@@ -248,16 +264,27 @@ def doc_quality_tablet(request):
 def doc_create_request(request, sheet_id=None, tablet_id=None):
     if request.method == 'POST':
         # TODO Создание запроса на ремонт
+
+
+        form = DocRequestForm(request.POST)
+        form.save()
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
         # TODO формирование запроса на основе путевого листа
-        form = DocRequestForm()
-        print
-        #rs = Roadsheets.objects.get(id=sheet_id)
-        #qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
 
-        form.fields['tablet'].queryset =Tablets.objects.get(id=tablet_id)
-        context ={'rs':rs, 'sheet_id': sheet_id, 'qualitis':qualitis, 'form':form}
+        form = DocRequestForm()
+
+        rs = Roadsheets.objects.get(id=sheet_id)
+        qualities = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
+
+        form.fields['tablet'].queryset = Tablets.objects.filter(id=tablet_id)
+        form.fields['tablet'].empty_label = None
+        form.fields['roadsheet'].queryset = Roadsheets.objects.filter(id=sheet_id)
+        form.fields['roadsheet'].empty_label = None
+        form.fields['tablet_break_request'].widget = forms.SelectMultiple(attrs={'size': '8'})
+        form.fields['tablet_break_request'].queryset = TabletQuality.objects.all()
+
+        context ={'rs':rs, 'sheet_id': sheet_id, 'qualities':qualities, 'form':form, 'request':request}
         return render(request, 'roadsheet/doc_create_request.html', context)
     pass
 
@@ -291,6 +318,20 @@ def user_login(request):
             print "Invalid login details: {0}, {1}".format(username, password)
             return HttpResponse("Invalid login details supplied.")
 def user_logout(request):
-    logout(request)
-    return render(request, 'roadsheet/index.html',{'username':request.user.username})
+    if request.method == 'POST':
+        logout(request)
+        return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+    else:
+
+        used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
+        tblt_a = Tablets.objects.exclude(id__in=used_tablets)
+        used_tablets = Tablets.objects.filter(id__in=used_tablets)
+
+        print tblt_a
+        print used_tablets
+        context = {'used_tablets':used_tablets, 'tblt_a':tblt_a}
+
+        return render(request, 'roadsheet/doc_end_day.html', context)
+
+
 

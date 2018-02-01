@@ -47,6 +47,6 @@ class DocRequestForm(ModelForm):
         model = DocRequest
         fields = '__all__'
         labels = {
-            "tablet": "Планшет",
-            "roadsheet": "Рейс",
+
+
         }
