@@ -52,14 +52,21 @@ class TabletQuality(models.Model):
     def __unicode__(self):
         return self.status.encode('utf8')
 
+# Sim Operators
+class SimOperators(models.Model):
+    operator = models.CharField(max_length=50, blank=True, editable=True)
+
+
 # SIM - ОК
 class SimCards(models.Model):
     number = models.CharField(max_length=20, blank=True, editable=True)
     sn = models.CharField(max_length=50, blank=True, editable=True)
-    operator = models.CharField(max_length=50, blank=True, editable=True)
+    operator = models.ForeignKey(SimOperators)
     in_use = models.BooleanField(default=True)
     def __unicode__(self):
         return str(self.number)
+
+
 
 # Планшеты - ОК
 class Tablets(models.Model):

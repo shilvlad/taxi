@@ -135,6 +135,9 @@ def roadsheet_close(request, sheet_id=None):
         rs = Roadsheets.objects.get(id=sheet_id)
         rs.closed_timestamp = datetime.datetime.now()
         rs.save()
+        dac = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(tablet=rs.get_tablet().tablet_id)
+        dac.aparted_timestamp = datetime.datetime.now()
+        dac.save()
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
 
     else:
@@ -164,6 +167,15 @@ def doc_add_tmc(request, sheet_id=None):
         if request.method == 'POST':
             form = DocAddTmcForm(request.POST)
             if form.is_valid():
+
+
+                #print form.roadsheet
+
+                #print dac
+                #if dac is None:
+                #    form.save()
+                #else:
+                #    dac.aparted_timestamp = datetime.datetime.now()
                 form.save()
                 return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
         else:
@@ -173,8 +185,7 @@ def doc_add_tmc(request, sheet_id=None):
                 rs_a = Roadsheets.objects.filter(closed_timestamp__isnull=True, execution_timestamp__isnull=False)
                 used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
                 tblt_a = Tablets.objects.exclude(id__in = used_tablets)
-                print used_tablets
-                print tblt_a
+
                 # TODO Надо исключить поломаные
                 form.fields['roadsheet'].queryset = rs_a
                 form.fields['tablet'].queryset = tblt_a
@@ -186,9 +197,9 @@ def doc_add_tmc(request, sheet_id=None):
                 #form = DocAddTmcForm(instance=DocAddTmc.objects.get(roadsheet=sheet_id))
                 rs_a = Roadsheets.objects.filter(id = sheet_id)
                 used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True ).values_list('tablet', flat=True)
-                print used_tablets
+
                 tblt_a = Tablets.objects.exclude(id__in=used_tablets)
-                print tblt_a
+
                 form = DocAddTmcForm(initial={'roadsheet':rs_a})
                 # TODO Надо исключить поломаные
                 form.fields['roadsheet'].queryset = rs_a
@@ -288,9 +299,6 @@ def doc_create_request(request, sheet_id=None, tablet_id=None):
         return render(request, 'roadsheet/doc_create_request.html', context)
     pass
 
-
-
-
 # Печатные формы
 # --------------
 #Печать документов
@@ -321,7 +329,7 @@ def user_login(request):
 
 def user_logout(request):
     if request.method == 'POST':
-
+        print request
         logout(request)
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
