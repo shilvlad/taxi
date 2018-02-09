@@ -97,7 +97,7 @@ class Roadsheets(models.Model):
         return str(self.id)
     def get_tablet(self):
         try:
-            tmp = DocAddTmc.objects.get(roadsheet=self)
+            tmp = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(roadsheet=self)
         except Exception:
             tmp = None
         return tmp
@@ -132,8 +132,7 @@ class DocAddTmc(models.Model):
     roadsheet = models.ForeignKey(Roadsheets, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, editable=True, null=True)
     aparted_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
-    def __unicode__(self):
-        return str(self.tablet)
+
 
 
 class DocRequest(models.Model):

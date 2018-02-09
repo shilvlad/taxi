@@ -167,18 +167,15 @@ def doc_add_tmc(request, sheet_id=None):
         if request.method == 'POST':
             form = DocAddTmcForm(request.POST)
             if form.is_valid():
-                form.save()
-                #newdoc = form.save(commit=False)
-                ##print newdoc
 
-                #print form.roadsheet
-
-                #print dac
-                #if dac is None:
-                #    form.save()
-                #else:
-                #    dac.aparted_timestamp = datetime.datetime.now()
-                #form.save()
+                newdoc = form.save(commit=False)
+                try:
+                    dac = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(roadsheet_id=newdoc.roadsheet_id)
+                    dac.aparted_timestamp = datetime.datetime.now()
+                    dac.save()
+                    form.save()
+                except Exception:
+                    form.save()
                 return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
         else:
             if sheet_id is None:
