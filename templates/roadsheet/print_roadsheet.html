@@ -1,14 +1,111 @@
 
-    {%  if user.is_authenticated %}
-        Выводим на печать № {{ sheet_id }}
-        {{ s.car.board_number }}
-        {{ s.car.car_model }}
-        {{ s.car.reg_number }}
-        {{ s.driver.first_name }}
-        {{ s.driver.middle_name }}
-        {{ s.driver.last_name }}
+{%  if user.is_authenticated %}
+    Выводим на печать № {{ sheet_id }}
+    {{ s.car.board_number }}
+    {{ s.car.car_model }}
+    {{ s.car.reg_number }}
+    {{ s.driver.first_name }}
+    {{ s.driver.middle_name }}
+    {{ s.driver.last_name }}
 
-    {% else %}
-       Залогиниться бы
+    <html>
+    <head>
+    </head>
 
-    {% endif %}
+    <body>
+
+    <table border=1 cellspacing=0 cellpadding=0 width=0>
+        <tr>
+            <td width=700 colspan=3> ПУТЕВОЙ ЛИСТ № {{ s.id }} от {{ s.creation_timestamp|date:'d.m.Y' }}<br>Легкового такси </td>
+        </tr>
+        <tr>
+            <td width=300>Организация:</td>
+            <td width=400 colspan=2>[ORGANISATION] ИНН 5025012335 Общество с Ограниченной Ответственностью «Альфа-Л» 141730 М.О. г.Лобня ул. Иванищенко д.11, тел. 8-495-999-97-00</td>
+        </tr>
+        <tr>
+            <td width=300>Марка автомобиля:</td>
+            <td width=400 colspan=2>[CAR_MODEL] [CAR_BRAND] Хендай солярис</td>
+        </tr>
+        <tr>
+            <td width=300>Государственный знак:</td>
+            <td width=400 colspan=2>[GOS_NUMBER] А 000 АА 750</td>
+        </tr>
+        <tr>
+            <td width=300>Бортовой номер:</td>
+            <td width=400 colspan=2>[BOARD_NUMBER] 1</td>
+        </tr>
+        <tr>
+            <td width=300>Водитель:</td>
+            <td width=400 colspan=2>[DRIVER] Иванов Иван Иванович</td>
+        </tr>
+        <tr >
+            <td width=300>Номер водительского удостоверения:</td>
+            <td width=400 colspan=2>[DRIVER_LICENCE]</br>Класс – В</td>
+        </tr>
+        <tr>
+            <td width=300>Предрейсовый медицинский осмотр пройден</td>
+            <td width=200>[MED_DATE_TIME]</td>
+            <td width=200>[STAMP]</td>
+        </tr>
+        <tr>
+            <td width=700 colspan=3>Автомобиль прошёл профилактическое обслуживание согласно графику технического обслуживания.</td>
+        </tr>
+        <tr>
+            <td width=300>Адрес места прохождения предрейсового технического осмотра</td>
+            <td width=400 colspan=2>[SERVICE_ADRESS] Московская область Дмитровский р-н с. Озерецкое д.41 «Б»</td>
+        </tr>
+        <tr>
+            <td width=300>Выезд разрешён:Начальник колонны (механик)</td>
+            <td width=200>[MECHANIС_NAME] Петров П.П.</td>
+            <td width=200>[DATE]</td>
+        </tr>
+        <tr>
+            <td width=300>Время выезда на линию</td>
+            <td width=200>по графику 8-00</td>
+            <td width=200>фактически 8-00</td>
+        </tr>
+        <tr>
+            <td width=300>Время возвращение в парк</td>
+            <td width=200>по графику 8-00</td>
+            <td width=200>фактически 8-00</td>
+        </tr>
+        <tr>
+            <td width=300>Диспетчер:</td>
+            <td width=200>[DISPATCHER_NAME] Сидорова</td>
+            <td width=200>[DATE]</td>
+        </tr>
+        <tr>
+            <td width=300>Механик:</td>
+            <td width=200>[MECHANIС_NAME] Петров</td>
+            <td width=200>[DATE]</td>
+        </tr>
+        <tr>
+            <td width=300>Водитель:</td>
+            <td width=200>[DRIVER_NAME] Иванов</td>
+            <td width=200>[DATE]</td>
+        </tr>
+    </table>
+
+    </body>
+    </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% else %}
+    Пользователь не авторизован
+
+{% endif %}
