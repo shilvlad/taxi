@@ -317,21 +317,23 @@ def user_login(request):
         else:
             print "Invalid login details: {0}, {1}".format(username, password)
             return HttpResponse("Invalid login details supplied.")
+
+
 def user_logout(request):
     if request.method == 'POST':
+
         logout(request)
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
-
-        used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
-        tblt_a = Tablets.objects.exclude(id__in=used_tablets)
-        used_tablets = Tablets.objects.filter(id__in=used_tablets)
-
-        print tblt_a
-        print used_tablets
-        context = {'used_tablets':used_tablets, 'tblt_a':tblt_a}
-
-        return render(request, 'roadsheet/doc_end_day.html', context)
+        if not request.user.has_perm('roadsheet.add_car'):
+            used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
+            tblt_a = Tablets.objects.exclude(id__in=used_tablets)
+            used_tablets = Tablets.objects.filter(id__in=used_tablets)
+            context = {'used_tablets':used_tablets, 'tblt_a':tblt_a}
+            return render(request, 'roadsheet/doc_end_day.html', context)
+        else:
+            logout(request)
+            return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
 
 
 
