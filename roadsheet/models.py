@@ -74,6 +74,8 @@ class TabletQuality(models.Model):
 # Sim Operators
 class SimOperators(models.Model):
     operator = models.CharField(max_length=50, blank=True, editable=True)
+    def __unicode__(self):
+        return self.operator.encode('utf8')
 
 
 # SIM - ОК

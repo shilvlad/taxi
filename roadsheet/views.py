@@ -231,7 +231,6 @@ def doc_part_tablet_sim(request):
     form.fields['sim'].queryset = sim_accessible
 
     context = {'form': form, 'tablets':tablets}
-    print form
     return render(request, 'roadsheet/doc_part_tablet_sim.html', context)
 
 # Раскомплектация планшета симкой
@@ -336,6 +335,7 @@ def user_login(request):
 def user_logout(request):
     if request.method == 'POST':
         print request
+
         logout(request)
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
