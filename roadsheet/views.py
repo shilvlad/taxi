@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality,\
-    DocAddTmc, DocRequest
+    DocAddTmc, DocRequest, Organization
 from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm, DocRequestForm
 from django import forms
 import datetime
@@ -32,7 +32,8 @@ def start(request):
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
         'closed_roadsheets': closed_roadsheets,
-        'repair_requests':repair_requests,
+        'repair_requests' : repair_requests,
+
     }
 
 
@@ -303,8 +304,14 @@ def doc_create_request(request, sheet_id=None, tablet_id=None):
 #Печать документов
 def print_roadsheet(request, sheet_id):
     road_sheet = Roadsheets.objects.get(id=sheet_id)
+    organization = Organization.objects.get(inn='5025012335')
+    categories = road_sheet.driver.license_category.all()
+    now = datetime.datetime.now()
     context = {
         's': road_sheet,
+        'org': organization,
+        'cats': categories,
+        'now':now
     }
     return render(request, 'roadsheet/print_roadsheet.html', context)
 

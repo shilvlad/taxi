@@ -7,6 +7,16 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+class Organization(models.Model):
+    name = models.CharField(max_length=100, editable = True)
+    inn = models.CharField(max_length=100, editable = True)
+    address = models.CharField(max_length=100, editable = True)
+    telephone = models.CharField(max_length=100, editable = True)
+    service_address = models.CharField(max_length=100, editable = True)
+    mechanic_name = models.CharField(max_length=100, editable = True)
+    def __unicode__(self):
+        return str(self.name)
+
 
 # График выезда - OK
 class DriverWorkload(models.Model):
@@ -14,12 +24,21 @@ class DriverWorkload(models.Model):
     def __unicode__(self):
         return str(self.workload)
 
+class DrLicenseCategory(models.Model):
+    name = models.CharField(max_length=2, editable=True,default = 0)
+    def __unicode__(self):
+        return str(self.name)
+
 # Водители - OK
 class Drivers(models.Model):
     first_name = models.CharField(max_length=100, editable = True)
     middle_name = models.CharField(max_length=100, editable = True)
     last_name = models.CharField(max_length=100, blank=True, editable=True)
     callsign = models.CharField(max_length=100,blank=True, editable = True)
+    license_number = models.CharField(max_length=100, editable=True, default=0)
+    license_date = models.CharField(max_length=100, editable=True, default=0)
+    license_category = models.ManyToManyField(DrLicenseCategory)
+
     def __unicode__(self):
         return self.first_name + " " + self.middle_name[:1]+ " " + self.last_name[:1]
 
