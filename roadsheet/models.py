@@ -116,12 +116,15 @@ class Roadsheets(models.Model):
     deleted = models.BooleanField(default=False, editable = False)
     def __unicode__(self):
         return str(self.id)
+
     def get_tablet(self):
         try:
-            tmp = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(roadsheet=self)
+            #tmp = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(roadsheet=self)
+            tmp = DocAddTmc.objects.filter(roadsheet=self).order_by('aparted_timestamp')[0]
         except Exception:
             tmp = None
         return tmp
+
 
 
 
