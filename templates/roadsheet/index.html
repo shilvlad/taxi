@@ -53,7 +53,7 @@
             <tr class="table-primary">
                 <th scope="row">{{ r.id }}</th>
                 <td>{{ r.driver }}</td>
-                <td>{{ r.execution_timestamp| date:"d.m.Y h:m"}}</td>
+                <td>{{ r.execution_timestamp| date:"d.m.Y H:m"}}</td>
                 <td>{{ r.car}}</td>
                 <td>
                     {% if  r.get_tablet is None%}
@@ -90,10 +90,10 @@
             <tr class="table-primary">
                 <th scope="row">{{ r.id }}</th>
                 <td>{{ r.driver }}</td>
-                <td>{{ r.execution_timestamp| date:"d.m.Y h:m" }}</td>
+                <td>{{ r.execution_timestamp| date:"d.m.Y H:m" }}</td>
                 <td>{{ r.car }}</td>
                 <td>{{ r.get_tablet.tablet }}</td>
-                <td>{{ r.closed_timestamp| date:"d.m.Y h:m"}}</td>
+                <td>{{ r.closed_timestamp| date:"d.m.Y H:m"}}</td>
             </tr>
         {% endfor %}
         </tbody>
