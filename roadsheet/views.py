@@ -132,10 +132,13 @@ def roadsheet_close(request, sheet_id=None):
         return HttpResponse("Не указан рейс")
 
     if request.method == 'POST':
-        print sheet_id
+
         rs = Roadsheets.objects.get(id=sheet_id)
         rs.closed_timestamp = datetime.datetime.now()
         rs.save()
+        if rs.get_tablet() is None:
+            return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+
         dac = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(tablet=rs.get_tablet().tablet_id)
         dac.aparted_timestamp = datetime.datetime.now()
         dac.save()

@@ -65,11 +65,9 @@
                 </td>
                 <td></td>
                 <td>
-                    {% if  r.get_tablet is None%}
-                        Планшет не привязывался
-                    {% else %}
-                        <a href="/roadsheet_close/{{ r.id }}/" onclick="window_open(href, 500, 500); return false;">Закрыть</a>
-                    {% endif %}
+
+                    <a href="/roadsheet_close/{{ r.id }}/" onclick="window_open(href, 500, 500); return false;">Закрыть</a>
+
 
 
                 </td>
