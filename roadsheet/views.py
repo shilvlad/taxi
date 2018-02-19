@@ -39,7 +39,7 @@ def start(request):
         'closed_roadsheets': closed_roadsheets,
         'repair_requests' : repair_requests,
         'perms':perms,
-        'version': os.getcwd(),
+        
     }
 
 
