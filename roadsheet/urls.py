@@ -25,6 +25,9 @@ urlpatterns = [
     url(r'^doc_create_request///$', views.doc_create_request, name='doc_create_request'),
     url(r'^doc_create_request/(?P<sheet_id>[0-9]+)/(?P<tablet_id>[0-9]+)/$', views.doc_create_request, name='doc_create_request'),
 
+    # Сервисмен
+    url(r'^request/(?P<req_id>[0-9]+)/get_to_sc$', views.req_get_to_sc, name='req_get_to_sc'),
+    url(r'^request/(?P<req_id>[0-9]+)/get_from_sc$', views.req_get_from_sc, name='req_get_from_sc'),
 
 
     url(r'^doc_part_tablet_sim/', views.doc_part_tablet_sim, name='doc_part_tablet_sim'),

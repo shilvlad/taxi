@@ -303,15 +303,30 @@ def doc_create_request(request, sheet_id=None, tablet_id=None):
             return render(request, 'roadsheet/doc_create_request.html', context)
         else:
             form = DocRequestForm()
-
-
-
-
-
-
             context = {'form': form, 'request': request}
             return render(request, 'roadsheet/doc_create_request.html', context)
     pass
+
+
+
+# Обработка запросов на ремонт
+def req_get_to_sc(request, req_id):
+    print "Get to SC"
+    req = DocRequest.objects.get(id=req_id)
+    req.timestamp_in_service = datetime.datetime.now();
+    req.save()
+    context = {}
+    return redirect(reverse('start'))
+
+
+def req_get_from_sc(request, req_id):
+    print "Get from SC"
+    req = DocRequest.objects.get(id=req_id)
+    req.closed_timestamp = datetime.datetime.now();
+    req.save()
+    context = {}
+    return redirect(reverse('start'))
+
 
 # Печатные формы
 # --------------

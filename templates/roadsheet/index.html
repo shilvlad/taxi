@@ -143,8 +143,13 @@
                         <td>{{ rr.timestamp| date:"d.m.Y H:m" }}</td>
                         <td>{{ rr.roadsheet }}</td>
                         <td>{{ rr.comment }}</td>
-                        <td>В ремонт</td>
-
+                        <td>
+                            {% if rr.timestamp_in_service is None %}
+                                <a href="/request/{{ rr.id }}/get_to_sc">В ремонт</a>
+                            {% else %}
+                                <a href="/request/{{ rr.id }}/get_from_sc">Вернуть</a>
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>
