@@ -130,7 +130,9 @@
                     <th scope="col">№</th>
                     <th scope="col">Планшет</th>
                     <th scope="col">Время заявки</th>
-                    <th scope="col">Номер рейса</th>
+                    <th scope="col">Получен с рейса</th>
+                    <th scope="col">Комментарий</th>
+                    <th scope="col">Действие</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -138,8 +140,10 @@
                     <tr class="table-primary">
                         <td>{{ rr.id }}</td>
                         <td>{{ rr.tablet }}</td>
-                        <td>{{ rr.timestamp }}</td>
+                        <td>{{ rr.timestamp| date:"d.m.Y H:m" }}</td>
                         <td>{{ rr.roadsheet }}</td>
+                        <td>{{ rr.comment }}</td>
+                        <td>В ремонт</td>
 
                     </tr>
                 {% endfor %}
