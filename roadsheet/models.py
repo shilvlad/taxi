@@ -1,18 +1,34 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-class UserRoles:
-    name = models.CharField(max_length=100, editable = True)
+
+class Profile(models.Model):
+    ROLES_CHOICES = (
+        ('operator', 'Оператор'),
+        ('serviceman', 'Сервисный инженер'),
+    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    role = models.CharField(max_length=100, choices=ROLES_CHOICES)
     def __unicode__(self):
-        return str(self.name)
+        return "Username: " + self.user.username + ". Role: "  + self.role
 
 
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 
 class Organization(models.Model):

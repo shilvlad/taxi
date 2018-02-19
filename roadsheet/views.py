@@ -9,7 +9,7 @@ from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, 
 from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm, DocRequestForm
 from django import forms
 import datetime
-
+import perm
 
 
 # Create your views here.
@@ -21,19 +21,23 @@ sys.setdefaultencoding('utf-8')
 # Главная вьюшка
 def start(request):
 
+    #print perm.isOperator(request)
+    #print perm.isServiceman(request)
+
+
     drafts_roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=True, deleted=False)
     roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=False, closed_timestamp__isnull= True, deleted=False)
     closed_roadsheets = Roadsheets.objects.filter(closed_timestamp__gt=datetime.date.today())
 
     repair_requests = DocRequest.objects.filter(closed_timestamp__isnull=True)
 
-
+    perms = {'op':perm.isOperator(request), 'service':perm.isServiceman(request)}
     context = {
         'roadsheets': roadsheets,
         'drafts_roadsheets': drafts_roadsheets,
         'closed_roadsheets': closed_roadsheets,
         'repair_requests' : repair_requests,
-
+        'perms':perms
     }
 
 
@@ -369,8 +373,8 @@ def user_logout(request):
         logout(request)
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
-        if not request.user.has_perm('roadsheet.add_cars'):
-
+        #if not request.user.has_perm('roadsheet.add_cars'):
+        if perm.isOperator(request):
             context = {
                 'tablets_in_use':functions.get_tablets_in_use(),
                 'tablets_accessible':functions.get_tablets_accessible(),

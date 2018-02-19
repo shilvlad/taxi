@@ -57,9 +57,8 @@ def get_tablets_accessible():
             exclude(id__in=c.values_list('id', flat=True))
     #print d
     return d
-    #print Tablets.objects.exclude(id_in=get_tablets_in_use().values_list('id', flat=True))
-    #return Tablets.objects.exclude(id_in=get_tablets_in_use().values_list('id', flat=True)).\
-    #    exclude(id_in=get_tablets_in_sc().values_list('id', flat=True)).\
-    #    exclude(id_in=get_tablets_in_diagnostic().values_list('id', flat=True))
+
+
+
 
 
