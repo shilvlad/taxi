@@ -20,7 +20,7 @@ sys.setdefaultencoding('utf-8')
 
 # Главная вьюшка
 def start(request):
-
+    print functions.get_version()
     #print perm.isOperator(request)
     #print perm.isServiceman(request)
 
@@ -37,7 +37,8 @@ def start(request):
         'drafts_roadsheets': drafts_roadsheets,
         'closed_roadsheets': closed_roadsheets,
         'repair_requests' : repair_requests,
-        'perms':perms
+        'perms':perms,
+        'version': functions.get_version(),
     }
 
 

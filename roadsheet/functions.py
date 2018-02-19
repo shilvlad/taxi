@@ -10,6 +10,10 @@ from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddT
 from django import forms
 import datetime
 
+def get_version():
+    f = open('version', 'r')
+    version = f.read()
+    return version
 
 def get_tablets_in_use():
     a = Tablets.objects.filter(id__in=DocAddTmc.objects.
