@@ -29,34 +29,13 @@
                             <td>{{ t.timestamp }}</td>
                             <td>{{ t.tablet }}</td>
                             <td>{{ t.tablet.model }}</td>
-                            <td>{{ t.quality }}</td>
+                            <td>{% for q in t.quality.all%} {{ q }}, {% endfor %}
+                            </td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-                <h1>Общий список</h1>
-                <table class="table table-hover">
-                    <thead>
-                    <tr class="info">
-                        <th scope="col">Документ</th>
-                        <th scope="col">Дата</th>
-                        <th scope="col">Номер планшета</th>
-                        <th scope="col">Модель</th>
-                        <th scope="col">Состояние</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {% for t in tablets %}
-                        <tr class="table-primary">
-                            <td>{{ t.id }}</td>
-                            <td>{{ t.timestamp }}</td>
-                            <td>{{ t.tablet }}</td>
-                            <td>{{ t.tablet.model }}</td>
-                            <td>{{ t.quality }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+
             </div>
             <div class="col-xs-120 col-sm-2">
                 <div class="form-group">

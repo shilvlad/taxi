@@ -1,8 +1,10 @@
 Создать запрос на ремонт
-{{ request.user.username}}
+<br><br>
+
 Состояние планшета перед рейсом
 <br><br>
-<br><br>
+
+
 ID планшета: {{ rs.get_tablet.tablet.id }}
 <br>
 Модель планшета: {{ rs.get_tablet.tablet.model }}
@@ -14,6 +16,7 @@ ID планшета: {{ rs.get_tablet.tablet.id }}
 Cостояние: {% for q in qualities %} {{ q.status }}, {% endfor %}
 <br><br>
 Состояние планшета после рейса
+
 
 <div class="form-group">
 

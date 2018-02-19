@@ -21,6 +21,8 @@ urlpatterns = [
     url(r'^doc_add_tmc/$', views.doc_add_tmc, name='doc_add_tmc'),
 
     # Запросы на ремонт
+    url(r'^doc_create_request/$', views.doc_create_request, name='doc_create_request'),
+    url(r'^doc_create_request///$', views.doc_create_request, name='doc_create_request'),
     url(r'^doc_create_request/(?P<sheet_id>[0-9]+)/(?P<tablet_id>[0-9]+)/$', views.doc_create_request, name='doc_create_request'),
 
 

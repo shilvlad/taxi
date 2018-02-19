@@ -4,7 +4,7 @@ from django.shortcuts import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
-from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality,\
+from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality, \
     DocAddTmc, DocRequest, Organization
 from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm, DocRequestForm
 from django import forms
@@ -13,7 +13,7 @@ import datetime
 
 
 # Create your views here.
-
+import functions
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -83,7 +83,7 @@ def roadsheet(request, sheet_id=None):
 
             form = RoadsheetForm(instance=Roadsheets.objects.get(id=sheet_id))
 
-            drivers_in_use = Roadsheets.objects.filter(closed_timestamp__isnull=True, deleted=False).\
+            drivers_in_use = Roadsheets.objects.filter(closed_timestamp__isnull=True, deleted=False). \
                 exclude(id=sheet_id).values_list('driver', flat=True)
             drivers_accessible = Drivers.objects.exclude(id__in=drivers_in_use)
 
@@ -186,29 +186,31 @@ def doc_add_tmc(request, sheet_id=None):
                 form = DocAddTmcForm()
                 # Отбор всех доступных планшетов и всех рейсов
                 rs_a = Roadsheets.objects.filter(closed_timestamp__isnull=True, execution_timestamp__isnull=False)
-                used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
-                tblt_a = Tablets.objects.exclude(id__in = used_tablets)
+                tblt_sc = DocRequest.objects.filter(closed_timestamp__isnull=True).values_list('tablet', flat=True)
 
-                # TODO Надо исключить поломаные
+                used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
+                tblt_b = Tablets.objects.exclude(id__in = used_tablets)
+                tblt_a = tblt_a.exclude( id__in = tblt_sc)
+
+
                 form.fields['roadsheet'].queryset = rs_a
                 form.fields['tablet'].queryset = tblt_a
             else:
-                # TODO Отбор для смены планшета
-                # Отбор всех доступных планшетов и одного рейса
-                # TODO Отбор для фиксированного планшета
+
                 form = DocAddTmcForm()
                 #form = DocAddTmcForm(instance=DocAddTmc.objects.get(roadsheet=sheet_id))
                 rs_a = Roadsheets.objects.filter(id = sheet_id)
                 used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True ).values_list('tablet', flat=True)
 
-                tblt_a = Tablets.objects.exclude(id__in=used_tablets)
-
+                tblt_sc = DocRequest.objects.filter(closed_timestamp__isnull=True).values_list('tablet', flat=True)
+                tblt_b = Tablets.objects.exclude(id__in=used_tablets)
+                tblt_a = tblt_b.exclude( id__in = tblt_sc)
                 form = DocAddTmcForm(initial={'roadsheet':rs_a})
-                # TODO Надо исключить поломаные
+
                 form.fields['roadsheet'].queryset = rs_a
                 form.fields['tablet'].queryset = tblt_a
                 form.fields['roadsheet'].empty_label = None
-                # TODO Установить значение SELECTED
+
 
             context = {'form': form}
             return render(request, 'roadsheet/doc_add_tmc.html', context)
@@ -284,21 +286,31 @@ def doc_create_request(request, sheet_id=None, tablet_id=None):
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
         # TODO формирование запроса на основе путевого листа
+        if sheet_id is not None and tablet_id is not None:
+            form = DocRequestForm()
 
-        form = DocRequestForm()
+            rs = Roadsheets.objects.get(id=sheet_id)
+            qualities = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
 
-        rs = Roadsheets.objects.get(id=sheet_id)
-        qualities = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
+            form.fields['tablet'].queryset = Tablets.objects.filter(id=tablet_id)
+            form.fields['tablet'].empty_label = None
+            form.fields['roadsheet'].queryset = Roadsheets.objects.filter(id=sheet_id)
+            form.fields['roadsheet'].empty_label = None
+            form.fields['tablet_break_request'].widget = forms.SelectMultiple(attrs={'size': '8'})
+            form.fields['tablet_break_request'].queryset = TabletQuality.objects.all()
 
-        form.fields['tablet'].queryset = Tablets.objects.filter(id=tablet_id)
-        form.fields['tablet'].empty_label = None
-        form.fields['roadsheet'].queryset = Roadsheets.objects.filter(id=sheet_id)
-        form.fields['roadsheet'].empty_label = None
-        form.fields['tablet_break_request'].widget = forms.SelectMultiple(attrs={'size': '8'})
-        form.fields['tablet_break_request'].queryset = TabletQuality.objects.all()
+            context ={'rs':rs, 'sheet_id': sheet_id, 'qualities':qualities, 'form':form, 'request':request}
+            return render(request, 'roadsheet/doc_create_request.html', context)
+        else:
+            form = DocRequestForm()
 
-        context ={'rs':rs, 'sheet_id': sheet_id, 'qualities':qualities, 'form':form, 'request':request}
-        return render(request, 'roadsheet/doc_create_request.html', context)
+
+
+
+
+
+            context = {'form': form, 'request': request}
+            return render(request, 'roadsheet/doc_create_request.html', context)
     pass
 
 # Печатные формы
@@ -342,11 +354,15 @@ def user_logout(request):
         logout(request)
         return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
     else:
-        if not request.user.has_perm('roadsheet.add_car'):
-            used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
-            tblt_a = Tablets.objects.exclude(id__in=used_tablets)
-            used_tablets = Tablets.objects.filter(id__in=used_tablets)
-            context = {'used_tablets':used_tablets, 'tblt_a':tblt_a}
+        if not request.user.has_perm('roadsheet.add_cars'):
+
+            context = {
+                'tablets_in_use':functions.get_tablets_in_use(),
+                'tablets_accessible':functions.get_tablets_accessible(),
+                'tablets_in_sc':functions.get_tablets_in_sc(),
+                'tablets_in_diagnostic': functions.get_tablets_in_diagnostic(),
+            }
+
             return render(request, 'roadsheet/doc_end_day.html', context)
         else:
             logout(request)

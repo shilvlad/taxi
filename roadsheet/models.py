@@ -7,12 +7,21 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+class UserRoles:
+    name = models.CharField(max_length=100, editable = True)
+    def __unicode__(self):
+        return str(self.name)
+
+
+
+
 class Organization(models.Model):
     name = models.CharField(max_length=100, editable = True)
     inn = models.CharField(max_length=100, editable = True)
     address = models.CharField(max_length=100, editable = True)
     telephone = models.CharField(max_length=100, editable = True)
     service_address = models.CharField(max_length=100, editable = True)
+    technical_chief = models.CharField(max_length=100, editable = True)
     mechanic_name = models.CharField(max_length=100, editable = True)
     def __unicode__(self):
         return str(self.name)
@@ -103,6 +112,8 @@ class Tablets(models.Model):
             tmp = None
         return tmp
 
+
+
 # Путевые листы
 class Roadsheets(models.Model):
     creation_timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=True)
@@ -119,12 +130,10 @@ class Roadsheets(models.Model):
 
     def get_tablet(self):
         try:
-            #tmp = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(roadsheet=self)
             tmp = DocAddTmc.objects.filter(roadsheet=self).order_by('aparted_timestamp')[0]
         except Exception:
             tmp = None
         return tmp
-
 
 
 
@@ -162,9 +171,10 @@ class DocAddTmc(models.Model):
 class DocRequest(models.Model):
     tablet = models.ForeignKey(Tablets, null=True)
     tablet_break_request =  models.ManyToManyField(TabletQuality)
-    roadsheet = models.ForeignKey(Roadsheets, null=True)
+    roadsheet = models.ForeignKey(Roadsheets, null=True, blank=True)
     comment = models.CharField(max_length=10000, null=True, blank=True)
-    timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, editable=True, null=True)
+    timestamp_in_service = models.DateTimeField(blank=True, editable=False, null=True)
     closed_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
     author = models.CharField(max_length=100, editable=False, null=True, blank=True)
 

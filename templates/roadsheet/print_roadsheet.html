@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <td width=300>Выезд разрешён:Начальник колонны (механик)</td>
-            <td width=200>{{ org.mechanic_name }}</td>
+            <td width=200>{{ org.technical_chief }}</td>
             <td width=200>{{ now | date:"d.m.Y"}}</td>
         </tr>
         <tr>
@@ -64,7 +64,7 @@
         </tr>
         <tr>
             <td width=300>Диспетчер:</td>
-            <td width=200>{{ user }}</td>
+            <td width=200>{{ user.get_full_name }}</td>
             <td width=200>{{ now | date:"d.m.Y"}}</td>
         </tr>
         <tr>
