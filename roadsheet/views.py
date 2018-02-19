@@ -15,12 +15,13 @@ import perm
 # Create your views here.
 import functions
 import sys
+import os
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
 # Главная вьюшка
 def start(request):
-    print functions.get_version()
+    #print functions.get_version()
     #print perm.isOperator(request)
     #print perm.isServiceman(request)
 
@@ -38,7 +39,7 @@ def start(request):
         'closed_roadsheets': closed_roadsheets,
         'repair_requests' : repair_requests,
         'perms':perms,
-        'version': functions.get_version(),
+        'version': os.getcwd(),
     }
 
 

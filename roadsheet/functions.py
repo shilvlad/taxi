@@ -11,7 +11,8 @@ from django import forms
 import datetime
 
 def get_version():
-    f = open('version', 'r')
+
+    f = open('/version', 'r')
     version = f.read()
     return version
 
