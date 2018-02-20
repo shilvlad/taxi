@@ -21,11 +21,6 @@ sys.setdefaultencoding('utf-8')
 
 # Главная вьюшка
 def start(request):
-    #print functions.get_version()
-    #print perm.isOperator(request)
-    #print perm.isServiceman(request)
-
-
     drafts_roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=True, deleted=False)
     roadsheets = Roadsheets.objects.filter(execution_timestamp__isnull=False, closed_timestamp__isnull= True, deleted=False)
     closed_roadsheets = Roadsheets.objects.filter(closed_timestamp__gt=datetime.date.today())
@@ -39,7 +34,7 @@ def start(request):
         'closed_roadsheets': closed_roadsheets,
         'repair_requests' : repair_requests,
         'perms':perms,
-        
+
     }
 
 
@@ -160,18 +155,12 @@ def roadsheet_close(request, sheet_id=None):
         context ={'rs':rs, 'sheet_id': sheet_id, 'qualitis':qualitis}
         return render(request, 'roadsheet/roadsheet_close.html', context)
 
-
-
-
-
 # ----------------------
 #Формирование документов
 # ----------------------
 
 # Передача ТМЦ на рейс
 # --------------------
-# Если POST то сохраняем
-# Если GET то отбор в зависимости от указанного sheet_id
 def doc_add_tmc(request, sheet_id=None):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -190,32 +179,15 @@ def doc_add_tmc(request, sheet_id=None):
         else:
             if sheet_id is None:
                 form = DocAddTmcForm()
-                # Отбор всех доступных планшетов и всех рейсов
-                rs_a = Roadsheets.objects.filter(closed_timestamp__isnull=True, execution_timestamp__isnull=False)
-                tblt_sc = DocRequest.objects.filter(closed_timestamp__isnull=True).values_list('tablet', flat=True)
-
-                used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).values_list('tablet', flat=True)
-                tblt_b = Tablets.objects.exclude(id__in = used_tablets)
-                tblt_a = tblt_a.exclude( id__in = tblt_sc)
-
-
-                form.fields['roadsheet'].queryset = rs_a
-                form.fields['tablet'].queryset = tblt_a
+                form.fields['roadsheet'].queryset = Roadsheets.objects.\
+                    filter(closed_timestamp__isnull=True, execution_timestamp__isnull=False)
+                form.fields['tablet'].queryset = functions.get_tablets_accessible()
             else:
-
                 form = DocAddTmcForm()
-                #form = DocAddTmcForm(instance=DocAddTmc.objects.get(roadsheet=sheet_id))
-                rs_a = Roadsheets.objects.filter(id = sheet_id)
-                used_tablets = DocAddTmc.objects.filter(aparted_timestamp__isnull=True ).values_list('tablet', flat=True)
-
-                tblt_sc = DocRequest.objects.filter(closed_timestamp__isnull=True).values_list('tablet', flat=True)
-                tblt_b = Tablets.objects.exclude(id__in=used_tablets)
-                tblt_a = tblt_b.exclude( id__in = tblt_sc)
-                form = DocAddTmcForm(initial={'roadsheet':rs_a})
-
-                form.fields['roadsheet'].queryset = rs_a
-                form.fields['tablet'].queryset = tblt_a
+                form.fields['roadsheet'].queryset = Roadsheets.objects.filter(id = sheet_id)
                 form.fields['roadsheet'].empty_label = None
+                form.fields['tablet'].queryset = functions.get_tablets_accessible()
+
 
 
             context = {'form': form}

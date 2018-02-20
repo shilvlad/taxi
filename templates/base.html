@@ -66,14 +66,15 @@
 
 
 
-    {% if perms.roadsheet.add_roadsheets %}
+    {% if perms.op %}
         {% block content %}{% endblock %}
     {% endif %}
 
 
-    {% if perms.roadsheet.add_tablets %}
+    {% if perms.service %}
         {% block info%}{% endblock %}
     {% endif %}
+
 {% else %}
     <div class="form-group">
         <form id="login_form" method="post" action="/login/">

@@ -11,9 +11,6 @@ def isOperator(req):
     except Exception:
         return False
 
-
-
-
 def isServiceman(req):
     try:
         p = Profile.objects.get(user=req.user.id)
