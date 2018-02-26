@@ -48,7 +48,7 @@
             <th scope="col">Время отправки</th>
             <th scope="col">Авто</th>
             <th scope="col">Планшет</th>
-            <th scope="col">Что-нибудь</th>
+            <th scope="col">SIM-карта</th>
             <th scope="col">Закрытие</th>
         </tr>
         </thead>
@@ -66,7 +66,12 @@
                         <a href="/doc_add_tmc/{{ r.id }}/" onclick="window_open(href, 300, 300); return false;">{{ r.get_tablet.tablet }}</a>
                     {% endif %}
                 </td>
-                <td></td>
+                <td>
+                    {% for t in r.get_sim.all %}
+                        {{ t.sim.sn }}
+                    {% endfor %}
+
+                </td>
                 <td>
 
                     <a href="/roadsheet_close/{{ r.id }}/" onclick="window_open(href, 500, 500); return false;">Закрыть</a>
@@ -91,6 +96,7 @@
             <th scope="col">Время отправки</th>
             <th scope="col">Авто</th>
             <th scope="col">Планшет</th>
+            <th scope="col">SIM-карта</th>
             <th scope="col">Время прибытия</th>
 
         </tr>
@@ -103,6 +109,12 @@
                 <td>{{ r.execution_timestamp| date:"d.m.Y H:m" }}</td>
                 <td>{{ r.car }}</td>
                 <td>{{ r.get_tablet.tablet }}</td>
+
+                <td>
+                    {% for t in r.get_sim.all %}
+                        {{ t.sim.sn }}
+                    {% endfor %}
+                </td>
                 <td>{{ r.closed_timestamp| date:"d.m.Y H:m"}}</td>
             </tr>
         {% endfor %}

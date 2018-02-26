@@ -206,11 +206,15 @@ def doc_part_tablet_sim(request):
         form = DocTabletSimForm()
 
     tablets = DocTabletSim.objects.filter(aparted_timestamp=None)
+
     tablets_in_use = DocTabletSim.objects.filter(aparted_timestamp=None).values_list('tablet', flat=True)
     tablets_accessible = Tablets.objects.exclude(id__in=tablets_in_use)
+
+
     sim_in_use = DocTabletSim.objects.filter(aparted_timestamp=None).values_list('sim', flat=True)
     sim_accessible = SimCards.objects.exclude(id__in=sim_in_use)
-    form.fields['tablet'].queryset = tablets_accessible
+    #form.fields['tablet'].queryset = tablets_accessible
+    form.fields['tablet'].queryset =  Tablets.objects.all()
     form.fields['sim'].queryset = sim_accessible
 
     perms = {'op': perm.isOperator(request), 'service': perm.isServiceman(request)}

@@ -151,6 +151,14 @@ class Roadsheets(models.Model):
         except Exception:
             tmp = None
         return tmp
+    # Возвращает queryset
+    def get_sim(self):
+        try:
+            tblt = DocAddTmc.objects.filter(roadsheet=self).order_by('aparted_timestamp')[0]
+            tmp = DocTabletSim.objects.filter(tablet = tblt.tablet_id, aparted_timestamp__isnull=True)
+        except Exception:
+            tmp = None
+        return tmp
 
 
 

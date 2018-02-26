@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block info %}
-   {% if perms.service %}
+    {% if perms.service %}
         <div class="row">
             <div class="col-xs-120 col-sm-1">
 
@@ -29,7 +29,7 @@
                             <td>{{ t.timestamp }}</td>
                             <td>{{ t.tablet }}</td>
                             <td>{{ t.tablet.model }}</td>
-                            <td>{% for q in t.quality.all%} {{ q }}, {% endfor %}
+                            <td>{% for q in t.quality.all%} {{ q }}  {% endfor %}
                             </td>
                         </tr>
                     {% endfor %}
