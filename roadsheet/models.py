@@ -14,6 +14,7 @@ class Profile(models.Model):
     ROLES_CHOICES = (
         ('operator', 'Оператор'),
         ('serviceman', 'Сервисный инженер'),
+        ('admin','Администратор')
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices=ROLES_CHOICES)
