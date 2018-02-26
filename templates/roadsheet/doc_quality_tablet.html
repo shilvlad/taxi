@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block info %}
-    {%  if user.is_authenticated %}
+   {% if perms.service %}
         <div class="row">
             <div class="col-xs-120 col-sm-1">
 

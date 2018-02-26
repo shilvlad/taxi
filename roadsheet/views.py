@@ -213,7 +213,9 @@ def doc_part_tablet_sim(request):
     form.fields['tablet'].queryset = tablets_accessible
     form.fields['sim'].queryset = sim_accessible
 
-    context = {'form': form, 'tablets':tablets}
+    perms = {'op': perm.isOperator(request), 'service': perm.isServiceman(request)}
+
+    context = {'form': form, 'tablets':tablets, 'perms':perms}
     return render(request, 'roadsheet/doc_part_tablet_sim.html', context)
 
 # Раскомплектация планшета симкой
@@ -249,7 +251,9 @@ def doc_quality_tablet(request):
 
     form.fields['tablet'].queryset = Tablets.objects.all()
     form.fields['quality'].queryset = TabletQuality.objects.all()
-    context = {'form': form, 'tablets': tablets, 'tablets_last': tablet_filtered }
+    perms = {'op': perm.isOperator(request), 'service': perm.isServiceman(request)}
+
+    context = {'form': form, 'tablets': tablets, 'tablets_last': tablet_filtered, 'perms':perms }
 
     return render(request, 'roadsheet/doc_quality_tablet.html', context)
 

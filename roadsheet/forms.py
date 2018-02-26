@@ -39,6 +39,10 @@ class DocAddTmcForm(ModelForm):
         labels = {
             "tablet": "Планшет",
             "roadsheet": "Рейс",
+            "craddle": "Держатель",
+            "charger_without_cable": "Зарядка без кабеля",
+            "charger_with_cable": "Зарядка с кабелем",
+            "cable_without_charger": "Кабель (отдельно)"
         }
 
 

@@ -16,19 +16,22 @@
             <th scope="col">Авто</th>
             <th scope="col">Оформление</th>
             <th scope="col">Удаление</th>
-            <th scope="col">Открыть рейс</th>
+            <th scope="col">Отправка</th>
+            <th scope="col">Редактирование</th>
+
         </tr>
         </thead>
         <tbody>
         {% for dr in drafts_roadsheets %}
             <tr class="table-primary">
-                <th scope="row"><a href="/roadsheet/{{ dr.id }}/" onclick="window_open(href, 550, 600); return false;">{{ dr.id }}</a></th>
+                <td>{{ dr.id }}</td>
                 <td>{{ dr.driver }}</td>
                 <td>{{ dr.execution_datetime}}</td>
                 <td>{{ dr.car}}</td>
                 <td><a href="/print/{{ dr.id }}" onclick="window_open(href, 800, 900); return false;">Печать</a></td>
                 <td><a href="/roadsheet_delete/{{ dr.id }}">Отменить</a></td>
                 <td><a href="/roadsheet_open/{{ dr.id }}" onClick="return confirm('Открыть рейс?')">Поехали </a></td>
+                <td><a href="/roadsheet/{{ dr.id }}/" onclick="window_open(href, 550, 600); return false;">Изменить</a></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -121,7 +124,7 @@
         </div>
     </div>
 
-    <div class="card bg-light mb-3" style="max-width: 40rem;">
+    <div class="card bg-light mb-3" style="max-width: 80rem;">
         <div class="card-header">Заявки на ремонт</div>
         <div class="card-body">
             <table class="table table-hover">
