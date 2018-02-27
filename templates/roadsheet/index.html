@@ -68,7 +68,7 @@
                 </td>
                 <td>
                     {% for t in r.get_sim.all %}
-                        {{ t.sim.operator }} {{ t.sim.sn }} <br>
+                        {{ t.sim.operator }} <br>
                     {% endfor %}
 
                 </td>
@@ -112,7 +112,7 @@
 
                 <td>
                     {% for t in r.get_sim.all %}
-                        {{ t.sim.operator }}: {{ t.sim.sn }}<br>
+                        {{ t.sim.operator }}:<br>
                     {% endfor %}
                 </td>
                 <td>{{ r.closed_timestamp| date:"d.m.Y H:m"}}</td>
@@ -160,9 +160,14 @@
                         <td>{{ rr.comment }}</td>
                         <td>
                             {% if rr.timestamp_in_service is None %}
-                                <a href="/request/{{ rr.id }}/get_to_sc">В ремонт</a>
-                            {% else %}
-                                <a href="/request/{{ rr.id }}/get_from_sc">Вернуть</a>
+                                <a href="/request/{{ rr.id }}/get_to_sc">В ремонт</a><br>
+                            {% endif %}
+                            <a href="/request/{{ rr.id }}/get_from_sc">Вернуть</a><br>
+                            {% if rr.tablet.timestamp_foolished is None %}
+                                <a href="/request/{{ rr.id }}/get_foolish">!Списать</a><br>
+                            {% endif %}
+                            {% if rr.tablet.timestamp_lost is None %}
+                                <a href="/request/{{ rr.id }}/get_lost">!Утерян</a><br>
                             {% endif %}
                         </td>
                     </tr>
@@ -172,6 +177,67 @@
 
         </div>
     </div>
+
+    <div class="card bg-light mb-3" style="max-width: 80rem;">
+        <div class="card-header">Все планшеты</div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                <tr class="info">
+                    <th scope="col">Планшет</th>
+                    <th scope="col">Статус</th>
+                    <th scope="col">Дата статуса</th>
+                    <th scope="col">Чтото</th>
+                    <th scope="col">Чтото</th>
+                    <th scope="col">Чтото</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for t in tablets %}
+                    <tr class="table-primary">
+                        <td>{{ t.internal_code }}</td>
+                        <td>
+                            {% if t.timestamp_foolished is not None %}
+                            Списан
+                            {% elif t.timestamp_lost is not None %}
+                            Потерян
+                            {% else %}
+                                {% if t.get_request.timestamp_in_service is not None %}
+                                     В ремонте
+                                {% elif t.get_request.timestamp is not None%}
+                                    В диагностике
+                                {% else %}
+                                    В эксплуатации
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>{% if t.timestamp_foolished is not None %}
+                            {{ t.timestamp_foolished | date:"d.m.Y H:m"}}
+
+                            {% elif t.timestamp_lost is not None %}
+                            {{ t.timestamp_lost | date:"d.m.Y H:m"}}
+                            {% else %}
+                                {% if t.get_request.timestamp_in_service is not None %}
+                                    {{ t.get_request.timestamp_in_service| date:"d.m.Y H:m" }}
+                                {% elif t.get_request.timestamp is not None%}
+                                    {{ t.get_request.timestamp| date:"d.m.Y H:m" }}
+                                {% else %}
+                                    {{ t.timestamp_create| date:"d.m.Y H:m"}}
+                                {% endif %}
+
+                            {% endif %}
+                        </td>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
 
 
 {% endblock %}

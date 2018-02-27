@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <title>{% block title %}{% endblock %} TAXI</title>
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.2/sandstone/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.3/sandstone/bootstrap.min.css" />
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -33,7 +33,7 @@
 
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="/roadsheet/" onclick="window_open(href, 300, 300); return false;">Новый рейс</a>
                 </li>
 
@@ -43,6 +43,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/doc_create_request/" onclick="window_open(href, 300, 300); return false;">Создать запрос</a>
                 </li>
+                {% if perms.op %}
+                    <a class="nav-link" href="/rep_osago/">ОСАГО</a>
+
+                {% endif %}
+                {% if perms.op %}
+                    <a class="nav-link" href="/rep_to/">TO</a>
+
+                {% endif %}
+
             </ul>
             <span class="badge badge-primary">Версия: v.0.4</span>
             <form class="form-inline my-2 my-lg-0">

@@ -119,7 +119,10 @@ class SimCards(models.Model):
 class Tablets(models.Model):
     model = models.CharField(max_length=100,blank=True, editable = True)
     serial_number = models.CharField(max_length=100,blank=True, editable = True)
+    timestamp_create = models.DateTimeField(auto_now_add=True, blank=True, null = True, editable = True)
     internal_code = models.CharField(max_length=100,blank=True, editable = True)
+    timestamp_foolished = models.DateTimeField(editable = True, blank=True, null=True)
+    timestamp_lost = models.DateTimeField( editable = True, blank=True, null=True)
     def __unicode__(self):
         return str(self.internal_code)
     def get_doc_quality_tablet(self):
@@ -128,8 +131,27 @@ class Tablets(models.Model):
         except Exception:
             tmp = None
         return tmp
+    def get_request(self):
+        try:
+            tmp = DocRequest.objects.filter(closed_timestamp__isnull=True).get(tablet=self)
+        except Exception:
+            tmp = None
+        return tmp
 
+# ОСАГО
+class Insurance(models.Model):
+    issue_date = models.DateField(blank=True, editable=True, null=True)
+    exp_date = models.DateField(blank=True, editable=True, null=True)
+    document_number = models.CharField(max_length=100, editable = True)
+    company_name = models.CharField(max_length=100, editable = True)
+    car = models.ForeignKey(Cars)
 
+class TO(models.Model):
+    owner = models.CharField(max_length=100, editable=True)
+    issue_date = models.DateField(blank=True, editable=True, null=True)
+    exp_date = models.DateField(blank=True, editable=True, null=True)
+    document_number = models.CharField(max_length=100, editable = True)
+    car = models.ForeignKey(Cars)
 
 # Путевые листы
 class Roadsheets(models.Model):
@@ -200,6 +222,7 @@ class DocRequest(models.Model):
     tablet = models.ForeignKey(Tablets, null=True)
     tablet_break_request =  models.ManyToManyField(TabletQuality)
     roadsheet = models.ForeignKey(Roadsheets, null=True, blank=True)
+    defect_desc = models.CharField(max_length=10000, null=True, blank=True)
     comment = models.CharField(max_length=10000, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, editable=True, null=True)
     timestamp_in_service = models.DateTimeField(blank=True, editable=False, null=True)

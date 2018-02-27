@@ -23,10 +23,22 @@
 Серийный номер: {{ rs.get_tablet.tablet.serial_number }}
 <br>
 Текущее состояние: {% for q in qualitis %} {{ q.status }} {% endfor %}
+<br>
 
-{% if rs.get_tablet is not None %}
-    <a href="\doc_create_request\{{ sheet_id }}\{{ rs.get_tablet.tablet.id }}" onclick="window_open(href, 500,500); return false;"> Не соответствует</a>
+
+{% if  rs.get_tablet.tablet.get_request is not None %}
+
+    <p><b>Создан запрос на диагностику. Рейс можно закрыть.</b></p>
+    Указаны повреждения: {{ rs.get_tablet.tablet.get_request.comment }}
+    <br><br>
+{% else %}
+    {% if rs.get_tablet is not None %}
+        <a href="\doc_create_request\{{ sheet_id }}\{{ rs.get_tablet.tablet.id }}" onclick="window_open(href, 500,500); return false;"> Не соответствует</a> <br> <br>
+    {% endif %}
 {% endif %}
+
+
+
 
 
 

@@ -28,6 +28,8 @@ urlpatterns = [
     # Сервисмен
     url(r'^request/(?P<req_id>[0-9]+)/get_to_sc$', views.req_get_to_sc, name='req_get_to_sc'),
     url(r'^request/(?P<req_id>[0-9]+)/get_from_sc$', views.req_get_from_sc, name='req_get_from_sc'),
+    url(r'^request/(?P<req_id>[0-9]+)/get_foolish$', views.req_get_foolish, name='req_get_foolish'),
+    url(r'^request/(?P<req_id>[0-9]+)/get_lost$', views.req_get_lost, name='req_get_lost'),
 
 
     url(r'^doc_part_tablet_sim/', views.doc_part_tablet_sim, name='doc_part_tablet_sim'),
@@ -36,8 +38,9 @@ urlpatterns = [
     url(r'^print/(?P<sheet_id>[0-9]+)/$', views.print_roadsheet, name='print_roadsheet'),
 
 
-
-
+    # REPORTS
+    url(r'^rep_osago/$', views.rep_osago, name='rep_osago'),
+    url(r'^rep_to/$', views.rep_to, name='rep_to'),
 
 
 ]

@@ -54,7 +54,10 @@ def get_tablets_accessible():
 
     d = Tablets.objects.exclude(id__in=a.values_list('id', flat=True)).\
             exclude(id__in=b.values_list('id', flat=True)).\
-            exclude(id__in=c.values_list('id', flat=True))
+            exclude(id__in=c.values_list('id', flat=True)).\
+            exclude(timestamp_foolished__isnull=False).\
+            exclude(timestamp_lost__isnull=False)
+
     #print d
     return d
 

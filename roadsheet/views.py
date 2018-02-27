@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from .models import Roadsheets, Tablets, Cars, Drivers, DocTabletSim, SimCards, DocQualityTablet, TabletQuality, \
-    DocAddTmc, DocRequest, Organization, Profile
+    DocAddTmc, DocRequest, Organization, Profile, Insurance, TO
 from forms import RoadsheetForm, DocTabletSimForm, DocQualityTabletForm, DocAddTmcForm, DocRequestForm
 from django import forms
 import datetime
@@ -27,6 +27,8 @@ def start(request):
 
     repair_requests = DocRequest.objects.filter(closed_timestamp__isnull=True)
 
+    tablets = Tablets.objects.all()
+
     perms = {'op':perm.isOperator(request), 'service':perm.isServiceman(request)}
     context = {
         'roadsheets': roadsheets,
@@ -34,6 +36,7 @@ def start(request):
         'closed_roadsheets': closed_roadsheets,
         'repair_requests' : repair_requests,
         'perms':perms,
+        'tablets':tablets,
 
     }
 
@@ -148,6 +151,7 @@ def roadsheet_close(request, sheet_id=None):
     else:
         # TODO Проверка всего чего только можно перед закрытием
         rs = Roadsheets.objects.get(id=sheet_id)
+        #print rs.get_tablet().tablet.get
         try:
             qualitis = rs.get_tablet().tablet.get_doc_quality_tablet().quality.all()
         except Exception:
@@ -289,6 +293,7 @@ def doc_create_request(request, sheet_id=None, tablet_id=None):
             return render(request, 'roadsheet/doc_create_request.html', context)
         else:
             form = DocRequestForm()
+
             context = {'form': form, 'request': request}
             return render(request, 'roadsheet/doc_create_request.html', context)
     pass
@@ -297,7 +302,7 @@ def doc_create_request(request, sheet_id=None, tablet_id=None):
 
 # Обработка запросов на ремонт
 def req_get_to_sc(request, req_id):
-    print "Get to SC"
+
     req = DocRequest.objects.get(id=req_id)
     req.timestamp_in_service = datetime.datetime.now();
     req.save()
@@ -306,13 +311,40 @@ def req_get_to_sc(request, req_id):
 
 
 def req_get_from_sc(request, req_id):
-    print "Get from SC"
+
     req = DocRequest.objects.get(id=req_id)
-    req.closed_timestamp = datetime.datetime.now();
+    req.closed_timestamp = datetime.datetime.now()
+    if req.timestamp_in_service is None:
+        req.timestamp_in_service = datetime.datetime.now()
     req.save()
     context = {}
     return redirect(reverse('start'))
 
+def req_get_foolish(request, req_id):
+
+    req = DocRequest.objects.get(id=req_id)
+    req.closed_timestamp = datetime.datetime.now()
+    if req.timestamp_in_service is None:
+        req.timestamp_in_service = datetime.datetime.now()
+    tablet = Tablets.objects.get(id = req.tablet_id)
+    tablet.timestamp_foolished = datetime.datetime.now();
+    tablet.save()
+    req.save()
+    context = {}
+    return redirect(reverse('start'))
+
+def req_get_lost(request, req_id):
+
+    req = DocRequest.objects.get(id=req_id)
+    req.closed_timestamp = datetime.datetime.now()
+    if req.timestamp_in_service is None:
+        req.timestamp_in_service = datetime.datetime.now()
+    tablet = Tablets.objects.get(id = req.tablet_id)
+    tablet.timestamp_lost = datetime.datetime.now();
+    tablet.save()
+    req.save()
+    context = {}
+    return redirect(reverse('start'))
 
 # Печатные формы
 # --------------
@@ -340,6 +372,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
+
                 return HttpResponseRedirect('/')
             else:
                 return HttpResponse("Your account is disabled.")
@@ -371,3 +404,15 @@ def user_logout(request):
 
 
 
+# ОТЧЕТЫ
+def rep_osago(request):
+    ins = Insurance.objects.all().order_by('exp_date')
+    perms = {'op': perm.isOperator(request), 'service': perm.isServiceman(request)}
+    context = {'ins':ins, 'perms':perms, 'now':datetime.datetime.now()}
+    return render(request, 'roadsheet/reports/rep_osago.html', context)
+
+def rep_to(request):
+    to = TO.objects.all().order_by('exp_date')
+    perms = {'op': perm.isOperator(request), 'service': perm.isServiceman(request)}
+    context = {'ins':to, 'perms':perms, 'now':datetime.datetime.now()}
+    return render(request, 'roadsheet/reports/rep_osago.html', context)
