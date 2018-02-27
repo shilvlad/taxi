@@ -212,9 +212,10 @@ class DocAddTmc(models.Model):
     roadsheet = models.ForeignKey(Roadsheets, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, editable=True, null=True)
     aparted_timestamp = models.DateTimeField(blank=True, editable=False, null=True)
+
     craddle = models.BooleanField(default=False, editable = True)
+    charger_with_cable = models.BooleanField(default=False, editable=True)
     charger_without_cable = models.BooleanField(default=False, editable = True)
-    charger_with_cable = models.BooleanField(default=False, editable = True)
     cable_without_charger = models.BooleanField(default=False, editable = True)
 
 

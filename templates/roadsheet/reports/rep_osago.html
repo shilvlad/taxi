@@ -17,6 +17,7 @@
         <thead>
         <tr class="info">
             <th scope="col">№</th>
+            <th scope="col">Авто</th>
             <th scope="col">Дата окончания</th>
             <th scope="col">Компания</th>
             <th scope="col">Номер документа</th>
@@ -28,6 +29,7 @@
         {% for i in ins %}
             <tr class="table-primary">
                 <td>{{ i.id }}</td>
+                <td>{{ i.car }}</td>
                 <td>{{ i.exp_date| date:"d.m.Y" }}</td>
                 <td>{{ i.company_name }}</td>
                 <td>{{ i.document_number }}</td>
