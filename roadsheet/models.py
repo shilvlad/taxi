@@ -233,14 +233,4 @@ class DocRequest(models.Model):
     def __unicode__(self):
         return str(self.tablet)
 
-class DocEndDay(models.Model):
-    t_in_use = models.ManyToManyField(Tablets)
-    t_accessible = models.ManyToManyField(Tablets, related_name="tab_access")
-    t_in_diagnostic = models.ManyToManyField(Tablets, related_name="tab_diagnostic")
-    timestamp = models.DateTimeField(auto_now_add=True, editable=False, null=True)
-    timestamp_approved = models.DateTimeField(auto_now_add=True, editable=False, null=True)
-    operator = models.CharField(max_length=100, editable=False, null=True, blank=True)
-    operator_approved = models.CharField(max_length=100, editable=False, null=True, blank=True)
 
-    def __unicode__(self):
-        return str(self.id)
