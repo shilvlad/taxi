@@ -137,7 +137,7 @@
     </div>
 
     <div class="card bg-light mb-3" style="max-width: 80rem;">
-        <div class="card-header">Заявки на ремонт</div>
+        <div class="card-header">Планшеты на ремонт</div>
         <div class="card-body">
             <table class="table table-hover">
                 <thead>
@@ -152,6 +152,7 @@
                 </thead>
                 <tbody>
                 {% for rr in repair_requests %}
+                    {% if rr.timestamp_in_service is None %}
                     <tr class="table-primary">
                         <td>{{ rr.id }}</td>
                         <td>{{ rr.tablet }}</td>
@@ -171,6 +172,51 @@
                             {% endif %}
                         </td>
                     </tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="card bg-light mb-3" style="max-width: 80rem;">
+        <div class="card-header">Планшеты в ремонте</div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                <tr class="info">
+                    <th scope="col">№</th>
+                    <th scope="col">Планшет</th>
+                    <th scope="col">Время заявки</th>
+                    <th scope="col">Получен с рейса</th>
+                    <th scope="col">Комментарий</th>
+                    <th scope="col">Действие</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for rr in repair_requests %}
+                    {% if rr.timestamp_in_service is not None %}
+                    <tr class="table-primary">
+                        <td>{{ rr.id }}</td>
+                        <td>{{ rr.tablet }}</td>
+                        <td>{{ rr.timestamp| date:"d.m.Y H:m" }}</td>
+                        <td>{{ rr.roadsheet }}</td>
+                        <td>{{ rr.comment }}</td>
+                        <td>
+                            {% if rr.timestamp_in_service is None %}
+                                <a href="/request/{{ rr.id }}/get_to_sc">В ремонт</a><br>
+                            {% endif %}
+                            <a href="/request/{{ rr.id }}/get_from_sc">Вернуть</a><br>
+                            {% if rr.tablet.timestamp_foolished is None %}
+                                <a href="/request/{{ rr.id }}/get_foolish">!Списать</a><br>
+                            {% endif %}
+                            {% if rr.tablet.timestamp_lost is None %}
+                                <a href="/request/{{ rr.id }}/get_lost">!Утерян</a><br>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>
