@@ -8,10 +8,13 @@
     <title>{% block title %}{% endblock %} TAXI</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.3/sandstone/bootstrap.min.css" />
 
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     {% load static %}
     <script src="{% static "taxi.js" %} "></script>
+    <link rel="stylesheet" type="text/css" href="{% static "taxi.css" %} " />
 </head>
 <style>
 </style>
@@ -29,12 +32,17 @@
             <ul class="navbar-nav mr-auto">
                 {% if perms.op %}
                     <li class="nav-item">
-                        <a class="nav-link" href="/roadsheet/" onclick="window_open(href, 300, 300); return false;">Новый рейс</a>
+                        <a class="nav-link" onclick="show('block', 'roadsheet')">Новый рейс</a>
                     </li>
 
                     <li class="nav-item">
                         <a class="nav-link" href="/doc_add_tmc/" onclick="window_open(href, 300, 300); return false;">Выдать ТМЦ</a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="show('block', 'doc_add_tmc')">!Выдать ТМЦ</a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="/doc_create_request/" onclick="window_open(href, 300, 300); return false;">Создать запрос</a>
                     </li>
@@ -69,6 +77,16 @@
 
     {% if perms.op %}
         {% block content %}{% endblock %}
+
+
+
+
+
+
+
+
+
+
     {% endif %}
 
 
@@ -76,6 +94,21 @@
         {% block info%}{% endblock %}
     {% endif %}
 
+    <div  id="wrap"></div>
+
+    <div id="window" class="modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-body">
+                    <div class="content">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 {% else %}
     <div class="form-group">
         <form id="login_form" method="post" action="/login/">
@@ -94,5 +127,14 @@
 
 {% endif %}
 
+
+
+
+
+
 </body>
 </html>
+
+
+
+

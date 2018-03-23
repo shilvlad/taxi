@@ -66,8 +66,9 @@ def roadsheet(request, sheet_id=None):
                 tmp = Roadsheets.objects.get(id=sheet_id)
                 tmp.deleted = True
                 tmp.save()
-            #return redirect(reverse('start'))
-            return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+            return redirect(reverse('start'))
+            #return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+
     else:
 
         if sheet_id is None:
