@@ -180,7 +180,8 @@ def doc_add_tmc(request, sheet_id=None):
                     form.save()
                 except Exception:
                     form.save()
-                return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+                #return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+                return redirect(reverse('start'))
         else:
             if sheet_id is None:
                 form = DocAddTmcForm()

@@ -1,10 +1,19 @@
 {% block content %}
-    <p>Передать ТМЦ</p>
+
+    <div class="modal-header">
+        <h5 class="modal-title">Передать ТМЦ</h5>
+        <button type="button" class="close" onclick="show('none',0)" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
     <div class="form-group">
         <form action="/doc_add_tmc/" method="POST">
             {% csrf_token %}
             <table>{{ form }}</table>
-            <input type="submit" value="Передать ТМЦ" />
+            <div class="modal-footer">
+                <input class="btn btn-primary" type="submit" value="Передать ТМЦ" />
+            </div>
         </form>
     </div>
 {% endblock %}
