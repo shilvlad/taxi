@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'roadsheet'
+    'roadsheet',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

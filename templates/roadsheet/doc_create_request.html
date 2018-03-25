@@ -1,35 +1,69 @@
-Создать запрос на ремонт
-<br><br>
+{% load bootstrap4 %}
+{% load static %}
 
-Состояние планшета перед рейсом
-<br><br>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
-
-ID планшета: {{ rs.get_tablet.tablet.id }}
-<br>
-Модель планшета: {{ rs.get_tablet.tablet.model }}
-<br>
-Баркод планшета: {{ rs.get_tablet.tablet.internal_code }}
-<br>
-Серийный номер: {{ rs.get_tablet.tablet.serial_number }}
-<br>
-Cостояние: {% for q in qualities %} {{ q.status }}, {% endfor %}
-<br><br>
-Состояние планшета после рейса
+<script src="{% static "taxi.js" %} "></script>
+<link rel="stylesheet" type="text/css" href="{% static "taxi.css" %} " />
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.3/sandstone/bootstrap.min.css" />
 
 
-<div class="form-group">
 
-    <form action="/doc_create_request/{{ sheet_id }}/{{ rs.get_tablet.tablet.id }}\" method="POST">
-        {% csrf_token %}
-        <table>
-            {{ form }}
-        </table>
-        <input type="submit" value="Создать запрос">
+<div class="modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Создать запрос на ремонт</h5>
+
+            </div>
+            <div class="modal-body">
+                <p>
 
 
-    </form>
 
+                    Состояние планшета перед рейсом
+                    <br><br>
+
+
+                    ID планшета: {{ rs.get_tablet.tablet.id }}
+                    <br>
+                    Модель планшета: {{ rs.get_tablet.tablet.model }}
+                    <br>
+                    Баркод планшета: {{ rs.get_tablet.tablet.internal_code }}
+                    <br>
+                    Серийный номер: {{ rs.get_tablet.tablet.serial_number }}
+                    <br>
+                    Cостояние: {% for q in qualities %} {{ q.status }}, {% endfor %}
+                    <br><br>
+                    Состояние планшета после рейса
+
+
+                <div class="form-group">
+
+                    <form action="/doc_create_request/{{ sheet_id }}/{{ rs.get_tablet.tablet.id }}\" method="POST">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                        <input class="btn btn-primary" type="submit" value="Создать запрос">
+
+
+                    </form>
+
+                </div>
+
+
+
+
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+
 
 

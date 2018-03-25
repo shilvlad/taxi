@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     Главная
@@ -28,10 +29,22 @@
                 <td>{{ dr.driver }}</td>
                 <td>{{ dr.execution_datetime}}</td>
                 <td>{{ dr.car}}</td>
-                <td><a href="/print/{{ dr.id }}" onclick="window_open(href, 800, 900); return false;">Печать</a></td>
-                <td><a href="/roadsheet_delete/{{ dr.id }}">Отменить</a></td>
-                <td><a href="/roadsheet_open/{{ dr.id }}" onClick="return confirm('Открыть рейс?')">Поехали </a></td>
-                <td><a href="/roadsheet/{{ dr.id }}/" onclick="window_open(href, 550, 600); return false;">Изменить</a></td>
+                <td>
+                    <a href="/print/{{ dr.id }}" onclick="window_open(href, 800, 900); return false;"><img src="{% static "\icons\print.png" %} " </a>
+                </td>
+                <td>
+                    <form action="/roadsheet_delete/{{ dr.id }}">
+                        <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Открыть рейс?');">Отменить</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="/roadsheet_open/{{ dr.id }}">
+                        <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Открыть рейс?');">Поехали</button>
+                    </form>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="show('block', '/roadsheet/{{ dr.id }}/')">Изменить</button>
+                </td>
             </tr>
         {% endfor %}
         </tbody>
@@ -61,9 +74,11 @@
                 <td>{{ r.car}}</td>
                 <td>
                     {% if  r.get_tablet is None%}
-                        <a href="/doc_add_tmc/{{ r.id }}/" onclick="window_open(href, 300, 300); return false;">Выдать</a>
+
+                        <button type="button" class="btn btn-primary btn-sm" onclick="show('block', '/doc_add_tmc/{{ r.id }}/')">Выдать</button>
                     {% else %}
-                        <a href="/doc_add_tmc/{{ r.id }}/" onclick="window_open(href, 300, 300); return false;">{{ r.get_tablet.tablet }}</a>
+
+                        <button type="button" class="btn btn-primary btn-sm" onclick="show('block', '/doc_add_tmc/{{ r.id }}/')">Сменить {{ r.get_tablet.tablet }}</button>
                     {% endif %}
                 </td>
                 <td>
@@ -73,11 +88,7 @@
 
                 </td>
                 <td>
-
-                    <a href="/roadsheet_close/{{ r.id }}/" onclick="window_open(href, 500, 500); return false;">Закрыть</a>
-
-
-
+                    <button type="button" class="btn btn-primary btn-sm" onclick="show('block', 'roadsheet_close/{{ r.id }}/')">Закрыть</button>
                 </td>
 
 

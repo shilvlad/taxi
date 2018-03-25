@@ -1,4 +1,5 @@
 {% block content %}
+    {% load bootstrap4 %}
 
     <div class="modal-header">
         <h5 class="modal-title">Передать ТМЦ</h5>
@@ -6,11 +7,13 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-
+    <br>
     <div class="form-group">
         <form action="/doc_add_tmc/" method="POST">
             {% csrf_token %}
-            <table>{{ form }}</table>
+            {% bootstrap_form form %}
+
+
             <div class="modal-footer">
                 <input class="btn btn-primary" type="submit" value="Передать ТМЦ" />
             </div>

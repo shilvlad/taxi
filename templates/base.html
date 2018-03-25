@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,16 +38,13 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="/doc_add_tmc/" onclick="window_open(href, 300, 300); return false;">Выдать ТМЦ</a>
+                        <a class="nav-link" onclick="show('block', 'doc_add_tmc')">Выдать ТМЦ</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" onclick="show('block', 'doc_add_tmc')">!Выдать ТМЦ</a>
+                        <a class="nav-link" onclick="show('block', 'doc_create_request')">Создать запрос</a>
                     </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="/doc_create_request/" onclick="window_open(href, 300, 300); return false;">Создать запрос</a>
-                    </li>
                 {% endif %}
                 {% if perms.op %}
                     <a class="nav-link" href="/rep_osago/">ОСАГО</a>

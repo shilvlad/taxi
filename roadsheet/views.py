@@ -142,12 +142,14 @@ def roadsheet_close(request, sheet_id=None):
         rs.closed_timestamp = datetime.datetime.now()
         rs.save()
         if rs.get_tablet() is None:
-            return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+            #return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+            return redirect(reverse('start'))
 
         dac = DocAddTmc.objects.filter(aparted_timestamp__isnull=True).get(tablet=rs.get_tablet().tablet_id)
         dac.aparted_timestamp = datetime.datetime.now()
         dac.save()
-        return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+        #return HttpResponse("<script>window.close();window.opener.location.reload();</script>")
+        return redirect(reverse('start'))
 
     else:
         # TODO Проверка всего чего только можно перед закрытием
