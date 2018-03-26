@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load bootstrap4 %}
 {% block title %}
     Главная
 {% endblock %}
@@ -48,7 +48,7 @@
                     <form action="/doc_part_tablet_sim/" method="POST">
                         {% csrf_token %}
                         <table>
-                            {{ form }}
+                            {% bootstrap_form form %}
                         </table>
                         <input type="submit" value="Создать" />
                     </form>

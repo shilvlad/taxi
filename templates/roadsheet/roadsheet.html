@@ -1,7 +1,7 @@
 
 
 {% block content %}
-
+{% load bootstrap4 %}
 
 
     <div class="modal-header">
@@ -15,7 +15,7 @@
         <form action="/roadsheet/{{ sheet_id }}/" method="POST">
             {% csrf_token %}
             <table>
-                {{ form }}
+                {% bootstrap_form form %}
             </table>
             <div class="modal-footer">
 
