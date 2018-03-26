@@ -2,11 +2,11 @@
 <script src="{% static "taxi.js" %} "></script>
 
 <div class="modal-header">
-        <h5 class="modal-title">Закрытие путевого листа {{ roadsheet.id }}</h5>
-        <button type="button" class="close" onclick="show('none',0)" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
+    <h5 class="modal-title">Закрытие путевого листа {{ roadsheet.id }}</h5>
+    <button type="button" class="close" onclick="show('none',0)" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 
 <br><br>
 Водитель: {{ rs.driver.first_name }} {{ rs.driver.middle_name }} {{ rs.driver.last_name }}
@@ -55,8 +55,9 @@
         <table>
 
         </table>
-        <input class="btn btn-primary" type="submit" value="Сохранить">
-
+        <div class="modal-footer">
+            <input class="btn btn-primary" type="submit" value="Сохранить">
+        </div>
 
     </form>
 

@@ -1,7 +1,7 @@
-
+{% load static %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,30 +9,21 @@
     <meta name="author" content="">
     <title>{% block title %}{% endblock %} TAXI</title>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootswatch/4.0.0-beta.3/sandstone/bootstrap.min.css" />
-
-
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    {% load static %}
-    <script src="{% static "taxi.js" %} "></script>
+    <script src="{% static "taxi.js" %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static "taxi.css" %} " />
 </head>
-<style>
-</style>
-
 
 <body>
 {%  if user.is_authenticated %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="\#">ТАКСИ</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation" style="">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav mr-auto">
                 {% if perms.op %}
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="javascript:document.location.href='\\'">Все рейсы</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" onclick="show('block', 'roadsheet')">Новый рейс</a>
                     </li>
@@ -48,11 +39,9 @@
                 {% endif %}
                 {% if perms.op %}
                     <a class="nav-link" href="/rep_osago/">ОСАГО</a>
-
                 {% endif %}
                 {% if perms.op %}
                     <a class="nav-link" href="/rep_to/">TO</a>
-
                 {% endif %}
 
             </ul>
